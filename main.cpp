@@ -20,7 +20,8 @@ int main(int argc, char** argv) {
     //int **acm = g.dijkstra();
     //int **mst = g.prim();
     int **chm = g.twiceAround();
-    g.exibirMat(0); // exibir MST
+    //g.exibirMat(0); // exibir MST
+    //g.exibirMat(1); // exibir arv de caminhos minimos
     g.exibirMat(2); // exibir circuito hamiltoniano
     
     return 0;

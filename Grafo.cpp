@@ -76,7 +76,7 @@ bool Grafo::gerarMatRand(int _numVert) {
     for (int i = 0; i < _numVert; i++)
         for (int j = i + 1; j < _numVert; j++) {
             matrizAdj[i][j] = matrizAdj[j][i] = rand() % INTERV_DESVIO;
-            
+
             if (matrizAdj[i][j] < MIN_AREST)
                 matrizAdj[i][j] = matrizAdj[j][i] = MIN_AREST;
         }
@@ -84,10 +84,6 @@ bool Grafo::gerarMatRand(int _numVert) {
     numVert = _numVert;
     return valido = true;
 }
-int get(char _campo[]) {
-    // TODO
-}
-
 void Grafo::exibirMat(int _alg) {
     if (valido == false)
         cout << "Erro: o objeto nao e um grafo valido." << endl;
@@ -106,236 +102,196 @@ void Grafo::exibirMat(int _alg) {
         else
             cout << "== Twice-around ==";
         cout << endl;
-
-        for (int i = 0; i < numVert; i++) {
-            for (int j = 0; j < numVert; j++)
-                cout << tmpMat[i][j] << " ";
-            cout << endl;
-        }
+        
+        if (tmpMat == NULL)
+            cout << "Matriz invalida";
+        else
+            for (int i = 0; i < numVert; i++) {
+                for (int j = 0; j < numVert; j++)
+                    cout << tmpMat[i][j] << " ";
+                cout << endl;
+            }
 
         cout << endl;
     }
 }
+int get(char _campo[]) {
+    // TODO
+}
 
+/**
+ * ==== Algoritmos =====
+ */
+/**
+ * Referencia: este algoritmo foi retirado do material de Paulo Feofiloff - IME-USP. Tendo sido realizado uma
+ * unica alteracao: utilizar o valor -1, que representa infinito, ao inves de uma variavel pesoMAX como limitante
+ * superior para o peso das arestas.
+ * 
+ * http://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/prim.html
+ */
 int **Grafo::prim() {
     // o grafo atual nao e valido. Nada a fazer.
     if (valido == false)
         return NULL;
 
     // cria matriz de adjacencia da MST
-    // e conjunto visitados auxiliar no algoritmo de Prim
-    int **mst = new int*[numVert], *visitados = new int[numVert];
-    int visitadosLim = 0, numArestVistas = 0, pesoArestMenor = 0, vertDestMenor, vertOrigMenor, vertOrig;
-    int i, j, k;
-
-    bool jaInserido;
-
+    int **mst = new int*[numVert], i;
     for (i = 0; i < numVert; i++) {
         mst[i] = new int[numVert];
         for (int j = 0; j < numVert; j++)
             mst[i][j] = 0;
     }
 
-    // inicializa visitados com o vertice inicial
-    // (vertice 0)
-    visitados[0] = 0;
-    visitadosLim++;
+    int *cost = new int[numVert], w, v0 = 0, *frj = new int[numVert];
+    int *parent = new int[numVert];
+    for (w = 1; w < numVert; w++) {
+        parent[w] = -1;
+        frj[w] = 0;
+        cost[w] = matrizAdj[0][w];
+    }
+    parent[0] = 0;
+    while (1) {
+        int mincost = -1;
+        for (w = 0; w < numVert; w++)
+            if (parent[w] == -1 && (mincost > cost[w] || mincost == -1))
+                mincost = cost[v0 = w];
 
-    // Insere arestas ate que seu numero seja numVert -1 (para quando o grafo e conexo).
-    // Quando este e desconexo, pesoArestMenor assumira o valor -1 em algum momento,
-    // e o algoritmo ira parar.
-    while (numArestVistas < numVert -1 && pesoArestMenor != -1) {
-        pesoArestMenor = -1;
-        i = 0;
-        while (i < visitadosLim) {
-            vertOrig = visitados[i];
+        if (mincost == -1)
+            break;
 
-            for (j = 0; j < numVert; j++) {
-                if (matrizAdj[vertOrig][j] != 0) { // existe uma aresta entre os dois vertices   
-                    jaInserido = false;
-                    k = 0;
-
-                    while (k < visitadosLim && jaInserido == false) {
-                        if (j == visitados[k])
-                            jaInserido = true;
-                        k++;
-                    }
-
-                    // se este vertice ainda nao foi inserido
-                    // e esta aresta possui o menor peso encontrado
-                    if (jaInserido == false && (matrizAdj[vertOrig][j] < pesoArestMenor || pesoArestMenor == -1)) {
-                        vertOrigMenor = vertOrig;
-                        vertDestMenor = j;
-                        pesoArestMenor = matrizAdj[vertOrig][j];
-                    }
-                }
+        parent[v0] = frj[v0];
+        for (w = 0; w < numVert; w++)
+            if (parent[w] == -1 && cost[w] > matrizAdj[v0][w]) {
+                cost[w] = matrizAdj[v0][w];
+                frj[w] = v0;
             }
-            i++;
-        }
-
-        // uma aresta, que leva para um vertice ainda nao visitado foi encontrada.
-        if (pesoArestMenor != -1) {
-            // alcancamos um vertice, coloca-o no vetor de vertices visitados.
-            visitados[visitadosLim] = vertDestMenor;
-            visitadosLim++;
-
-            // inserimos a aresta na matriz de adj. da MST
-            mst[vertDestMenor][vertOrigMenor] = mst[vertOrigMenor][vertDestMenor] = pesoArestMenor;
-        }
-        numArestVistas++;
     }
 
-    delete [] visitados;
+    for (i = 1; i < numVert; i++)
+        mst[ i ][ parent[i] ] = mst[ parent[i] ][ i ] = matrizAdj[ i ][ parent[i] ];
+
+    delete [] frj;
+    delete [] cost;
+    delete [] parent;
+
     return alg[0] = mst; // retorna a MST
 }
-// FIXME
+/**
+ * Referencia: este algoritmo foi retirado do material de Paulo Feofiloff - IME-USP.
+ * Novamente, -1 foi utilizado como representante de infinito.
+ * 
+ * http://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/dijkstra.html
+ */
 int **Grafo::dijkstra() {
-    int **acm = new int*[numVert], // acm: matriz de adjacencia de uma arvore de caminhos minimos
-        **Q = new int*[numVert],   // Q: vetor de vertices a serem analizados
-        **visitados = new int*[numVert];
-
-    int i, j, vertMenor[3], posMenor, visitadosLim;
-
-    // declara arvores de caminhos minimos
-    for (i = 0; i < numVert; i++) {
+    int **acm = new int*[numVert]; // acm: matriz de adjacencia de uma arvore de caminhos minimos
+    
+    int *cost = new int[numVert], 
+        *frj = new int[numVert],
+        *parent = new int[numVert],
+        w, w0;
+    
+    for (int i = 0; i < numVert; i++) {
         acm[i] = new int[numVert];
-        for (j = 0; j < numVert; j++)
+        for (int j = 0; j < numVert; j++)
             acm[i][j] = 0;
     }
 
-    // inicializa conjunto de vertices que ainda devem ser visitados
-    for (i = 0; i < numVert; i++) {
-        Q[i] = new int[3];
-        Q[i][0] = i;  // indice do vertice
-        Q[i][1] = -1; // custo para alcanca-lo
-        Q[i][2] = -1; // predecessor do vertice
-
-        visitados[i] = new int[3];
+    for (w = 0; w < numVert; w++) {
+        parent[w] = -1;
+        cost[w] = matrizAdj[0][w];
+        frj[w] = 0;
     }
-    Q[0][0] = 0;
-    Q[0][1] = 0;
-    Q[0][2] = 0;
-
-    visitadosLim = numVert;
-    while (visitadosLim > 0) {
-        posMenor = 0;
-
-        //  encontra o vertice de menor custo.
-        //  -1 significa infinito.
-        for (i = 1; i < visitadosLim; i++)
-            if (Q[posMenor][0] == -1 || (Q[i][0] < Q[posMenor][0] && Q[i][0] != -1))
-                posMenor = i;
-
-        // retira o vertice do vetor, copiando o ultimo elemento
-        // valido para a posicao do vertice retirado.
-        vertMenor[0] = Q[posMenor][0];
-        vertMenor[1] = Q[posMenor][1];
-        vertMenor[2] = Q[posMenor][2];
-        Q[posMenor][0] = Q[visitadosLim - 1][0];
-        Q[posMenor][1] = Q[visitadosLim - 1][1];
-        Q[posMenor][2] = Q[visitadosLim - 1][2];
-
-        visitados[numVert - visitadosLim][0] = vertMenor[0];
-        visitados[numVert - visitadosLim][1] = vertMenor[1];
-        visitados[numVert - visitadosLim][2] = vertMenor[2];
-
-        // relaxamento de arestas
-        for (i = 0; i < visitadosLim; i++) {
-            if (
-                matrizAdj[ vertMenor[0] ][ Q[i][0] ] > 0 // para todos os vertices adjacentes que ainda nao foram retirados
-                && (
-                    // o vertice atual nao foi alcancado, possui custo infinito
-                    // ou um caminho de menor custo encontrado.
-                    Q[i][1] == -1 || Q[i][1] > vertMenor[1] + matrizAdj[ vertMenor[0] ][ Q[i][0] ]
-                )
-            ) {
-                Q[i][1] = vertMenor[1] + matrizAdj[ vertMenor[0] ][ Q[i][0] ];
-                Q[i][2] = vertMenor[0];
+    
+    parent[0] = 0;
+    cost[0] = 0;
+    
+    while (1) {
+        int mincost = -1;
+        for (w = 0; w < numVert; w++)
+            if (parent[w] == -1 && (mincost > cost[w] || mincost == -1))
+                mincost = cost[w0 = w];
+        if (mincost == -1) break;
+        parent[w0] = frj[w0];
+        for (w = 0; w < numVert; w++)
+            if (cost[w] > cost[w0] + matrizAdj[w0][w]) {
+                cost[w] = cost[w0] + matrizAdj[w0][w];
+                frj[w] = w0;
             }
-        }
-
-        visitadosLim--;
     }
-
-    for (i = 0; i < numVert; i++) {
-        acm[visitados[i][0]][visitados[i][2]] = matrizAdj[visitados[i][0]][visitados[i][2]];
-        acm[visitados[i][2]][visitados[i][0]] = matrizAdj[visitados[i][2]][visitados[i][0]];
-    }
-
-    for (i = 0; i < numVert; i++) {
-        delete [] Q[i];
-        delete [] visitados[i];
-    }
-    delete [] Q;
-    delete [] visitados;
+    
+    for (int i = 1; i < numVert; i++)
+        acm[ i ][ parent[i] ] = acm[ parent[i] ][ i ] = matrizAdj[ i ][ parent[i] ];
+    
+    delete [] frj;
+    delete [] cost;
+    delete [] parent;
 
     return alg[1] = acm;
 }
 int **Grafo::twiceAround() {
     int **mst, // arvore spanning minima
-        *lstVert, // lista de vertices visitados pelo DFS
-        lstLim = 2*numVert -1,
-        
-        **chm = new int*[numVert], // matriz adj. do circuito hamiltoniano
-        i, j;
+            *lstVert, // lista de vertices visitados pelo DFS
+            lstLim = 2 * numVert - 1,
+
+            **chm = new int*[numVert], // matriz adj. do circuito hamiltoniano
+            i, j;
     int custo = 0;
-    
+
     mst = prim();
     lstVert = DFS(mst);
-    
+
     for (i = 0; i < numVert; i++) {
         chm[i] = new int[numVert];
         for (j = 0; j < numVert; j++)
             chm[i][j] = 0;
     }
-    
+
     //exibirMat(0);
     /*cout << "== DFS ==" << endl;
     for (i = 0; i < lstLim; i++)
         cout << lstVert[i] << " ";
     cout << "\n\n";*/
-    
+
     i = 0;
-    while (i < lstLim -1) {
-        int j = i +1;
-        
-        while (j < lstLim -1)
+    while (i < lstLim - 1) {
+        int j = i + 1;
+
+        while (j < lstLim - 1)
             if (lstVert[j] != lstVert[i])
                 j++;
             else {
-                for (int k = j; k < lstLim -1; k++)
-                    lstVert[k] = lstVert[k +1];
+                for (int k = j; k < lstLim - 1; k++)
+                    lstVert[k] = lstVert[k + 1];
                 lstLim--;
             }
         i++;
     }
-    
+
     /*cout << "== Enxugamento ==" << endl;
     for (i = 0; i < lstLim; i++)
         cout << lstVert[i] << " ";
     cout << "\n\n"; */
-    
+
     for (j = 1; j < lstLim; j++) {
-        chm[ lstVert[j] ][ lstVert[j -1] ] = chm[ lstVert[j -1] ][ lstVert[j] ] = matrizAdj[ lstVert[j -1] ][ lstVert[j] ];
-        custo += chm[ lstVert[j] ][ lstVert[j -1] ];
+        chm[ lstVert[j] ][ lstVert[j - 1] ] = chm[ lstVert[j - 1] ][ lstVert[j] ] = matrizAdj[ lstVert[j - 1] ][ lstVert[j] ];
+        custo += chm[ lstVert[j] ][ lstVert[j - 1] ];
     }
-    
-    //cout << "Custo: " << custo << ". " << endl;
-    
+
+    cout << "Custo: " << custo << ". " << endl;
+
     delete [] lstVert;
     return alg[2] = chm;
 }
-
 int *Grafo::DFS(int **_matriz) {
-    int *lstVertVisit = new int[2 *numVert -1],
-        lstLim = 0;
+    int *lstVertVisit = new int[2 * numVert - 1],
+            lstLim = 0;
     DFS(_matriz, lstVertVisit, lstLim, 0);
-    
+
     return lstVertVisit;
 }
 void Grafo::DFS(int **_matriz, int *lstVertVisit, int &lstLim, int vertAtual) {
     lstVertVisit[lstLim++] = vertAtual;
-    
+
     for (int i = 0; i < numVert; i++)
         if (_matriz[vertAtual][i] != 0) {
             int k = 0;
@@ -343,7 +299,7 @@ void Grafo::DFS(int **_matriz, int *lstVertVisit, int &lstLim, int vertAtual) {
             while (k < lstLim && foiVisitado == false)
                 if (i == lstVertVisit[k++])
                     foiVisitado = true;
-        
+
             if (foiVisitado == false) {
                 DFS(_matriz, lstVertVisit, lstLim, i);
                 lstVertVisit[lstLim++] = vertAtual;
