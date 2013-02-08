@@ -21,6 +21,7 @@ public:
     virtual ~Grafo();
     
     bool gerarMatRand(int);
+    bool carregarMatExist(int **, int);
     bool reiniciar();
     void exibirMat(int = -1) const;
     
@@ -45,4 +46,3 @@ protected:
 };
 
 #endif	/* GRAFO_H */
-

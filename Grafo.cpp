@@ -7,6 +7,7 @@
  */
 
 #include "Grafo.h"
+
 #include <cstdlib>
 #include <time.h>
 #include <iostream>
@@ -37,14 +38,7 @@ Grafo::Grafo(int** _mat, int _tam) {
     for (int i = 0; i < NUM_ALG; i++)
         alg[i] = NULL;
     
-    if (_tam > 0) {
-        matrizAdj = new int*[numVert];
-        for (int i = 0; i < _tam; i++) {
-            matrizAdj[i] = new int[numVert];
-            for (int j = 0; j < _tam; j++)
-                matrizAdj[i][j] = _mat[i][j];
-        }
-    }
+    carregarMatExist(_mat, _tam);
 }
 Grafo::Grafo(const Grafo& _orig) {
     int **tMatrizAdj = _orig.getMatrizAdj();
@@ -73,6 +67,12 @@ Grafo::~Grafo() {
     reiniciar();
 }
 
+/**
+ * Desaloca a memoria utilizada pela matriz de adjacencia do grafo e dos algoritmos aplicados a este.
+ * 
+ * @return true, caso o grafo tenha sido reiniciado com sucesso. Falso caso ele nao fosse um grafo
+ * valido para ser reiniciado.
+ */
 bool Grafo::reiniciar() {
     if (valido == false)
         return false; // o grafo nao foi inicializado.
@@ -97,18 +97,49 @@ bool Grafo::reiniciar() {
         return true;
     }
 }
+/**
+ * Carrega matriz ja existente.
+ * @param _mat
+ * @param _tam
+ * @return 
+ */
+bool Grafo::carregarMatExist(int **_mat, int _tam) {
+    reiniciar();
+        
+    if (_tam < 1)
+        return false;
+    else {
+        matrizAdj = _mat;
+        numVert   = _tam;
+        return valido = true;
+    }
+}
+/**
+ * bool Grafo::gerarMatRand()
+ * 
+ * descricao: gera uma matriz de adjacencia randomica, com um numero de vertices igual ao valor de @_numVert.
+ * param:
+ *     int @_numVert, numero de vertices que o grafo devera conter. Se esse valor for inferior a 1, o grafo
+ *     nao sera criado.
+ * 
+ * retorna: true, se o grafo foi criado. Falso caso contrario.
+ */
 bool Grafo::gerarMatRand(int _numVert) {
     // numero de vertices invalido, nada a fazer
-    if (_numVert < 1)
-        return false;
+    if (_numVert < 1) return false;
 
-    // ja existe uma matriz alocada. Vamos substitui-la.
-    reiniciar();
+    reiniciar(); // ja existe uma matriz alocada. Vamos substitui-la.
+    
     matrizAdj = new int *[_numVert];
     for (int i = 0; i < _numVert; i++) {
         matrizAdj[i] = new int[_numVert];
+        for (int j = 0; j < _numVert; j++)
+            matrizAdj[i][j] = 0;
     }
 
+    // Preenchimento randomico.
+    // Esse procedimento pode demorar exaustivamente
+    // para grafos com um grande numero de vertices.
     srand(time(0));
     for (int i = 0; i < _numVert; i++)
         for (int j = i + 1; j < _numVert; j++) {
@@ -121,6 +152,16 @@ bool Grafo::gerarMatRand(int _numVert) {
     numVert = _numVert;
     return valido = true;
 }
+/**
+ * bool Grafo::exibirMat()
+ * 
+ * descricao: exibe a matriz de adjacencia do grafo original, caso nada seja passado
+ * como parametro, ou a matriz de algum dos algoritmos aplicados, contida em uma
+ * posicao do vetor Grafo.alg[].
+ * param:
+ *     int @_alg, um indice valido para o vetor Grafo.alg[] (default = -1).
+ * retorna: nada.
+ */
 void Grafo::exibirMat(int _alg) const {
     if (valido == false)
         cout << "Erro: o objeto nao e um grafo valido." << endl;
@@ -152,6 +193,7 @@ void Grafo::exibirMat(int _alg) const {
         cout << endl;
     }
 }
+
 bool Grafo::getValido() const {
     return valido;
 }

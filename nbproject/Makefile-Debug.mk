@@ -36,6 +36,7 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/Tsp.o \
 	${OBJECTDIR}/algoritmos.o \
 	${OBJECTDIR}/Grafo.o
 
@@ -68,6 +69,11 @@ ${OBJECTDIR}/main.o: main.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+
+${OBJECTDIR}/Tsp.o: Tsp.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Tsp.o Tsp.cpp
 
 ${OBJECTDIR}/algoritmos.o: algoritmos.cpp 
 	${MKDIR} -p ${OBJECTDIR}

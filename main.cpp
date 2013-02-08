@@ -6,40 +6,36 @@
  */
 
 #include <cstdlib>
-#include <iostream>
 #include <fstream>
 #include <string>
-#include "Grafo.h"
+#include "Tsp.h"
 
 using namespace std;
 
-void lerCidade() {
-    string linha;
-    ifstream cidade("src/wi.txt");
-    if (cidade.is_open()) {
-        while (cidade.good()) {
-            getlinha(cidade, linha);
-            cout << linha[0] << endl;
-            //cout << linha << endl;
-        }
-        cidade.close();
-    } else cout << "Unable to open file";
-}
-
 int main(int argc, char** argv) {
 
-    /*Grafo g;
+    /*
+    Grafo g;
     g.gerarMatRand(4);
-    g.exibirMat();
+    g.exibirMat(); // exibe mat. de adj. do grafo original
 
-    //int **acm = g.dijkstra();
-    //int **mst = g.prim();
+    int **acm = g.dijkstra();
+    int **mst = g.prim();
     int **chm = g.twiceAround();
-    //g.exibirMat(0); // exibir MST
-    //g.exibirMat(1); // exibir arv de caminhos minimos
-    g.exibirMat(2); // exibir circuito hamiltoniano*/
-    lerCidade();
-
+    g.exibirMat(0); // exibir MST
+    g.exibirMat(1); // exibir arv de caminhos minimos
+    g.exibirMat(2); // exibir circuito hamiltoniano
+    */
+    
+    Tsp western("src/berlin52");
+    //western.lerGrDoArq("src/wi.txt");
+    //western.gerarGrRand();
+    western.resolver();
+    
+    //Tsp inst1;
+    //inst1.gerarGrRand(5);
+    //inst1.resolver();
+    
     return 0;
 }
 
