@@ -29,8 +29,45 @@ Grafo::Grafo(int _numVert) {
 
     gerarMatRand(_numVert);
 }
-Grafo::Grafo(const Grafo& orig) {
-    // TODO
+Grafo::Grafo(int** _mat, int _tam) {
+    valido = false;
+    matrizAdj = NULL;
+    numVert = _tam;
+    
+    for (int i = 0; i < NUM_ALG; i++)
+        alg[i] = NULL;
+    
+    if (_tam > 0) {
+        matrizAdj = new int*[numVert];
+        for (int i = 0; i < _tam; i++) {
+            matrizAdj[i] = new int[numVert];
+            for (int j = 0; j < _tam; j++)
+                matrizAdj[i][j] = _mat[i][j];
+        }
+    }
+}
+Grafo::Grafo(const Grafo& _orig) {
+    int **tMatrizAdj = _orig.getMatrizAdj();
+    int **const*tAlg = _orig.getAlg();
+    int tNumVert     = _orig.getNumVert(),
+        tValido      = _orig.getValido();
+
+    matrizAdj = NULL;
+    numVert = tNumVert;
+    valido = tValido;
+    
+    if (valido) {
+        matrizAdj = new int*[numVert];
+        for (int i = 0; i < numVert; i++) {
+            matrizAdj[i] = new int[numVert];
+            for (int j = 0; j < numVert; j++)
+                matrizAdj[i][j] = tMatrizAdj[i][j];
+        }
+        for (int i = 0; i < NUM_ALG; i++)
+            alg[i] = (tAlg[i] != NULL) // TODO: copia profunda
+                   ? tAlg[i]
+                   : NULL;
+    }
 }
 Grafo::~Grafo() {
     reiniciar();
@@ -84,7 +121,7 @@ bool Grafo::gerarMatRand(int _numVert) {
     numVert = _numVert;
     return valido = true;
 }
-void Grafo::exibirMat(int _alg) {
+void Grafo::exibirMat(int _alg) const {
     if (valido == false)
         cout << "Erro: o objeto nao e um grafo valido." << endl;
     else {
@@ -115,6 +152,15 @@ void Grafo::exibirMat(int _alg) {
         cout << endl;
     }
 }
-int get(char _campo[]) {
-    // TODO
+bool Grafo::getValido() const {
+    return valido;
+}
+int  Grafo::getNumVert() const {
+    return numVert;
+}
+int**Grafo::getMatrizAdj() const {
+    return matrizAdj;
+}
+int** const*Grafo::getAlg() const {
+    return alg;
 }

@@ -16,22 +16,26 @@ class Grafo {
 public:
     Grafo();
     Grafo(int);
-    Grafo(const Grafo& orig);
+    Grafo(int **, int);
+    Grafo(const Grafo& _orig);
     virtual ~Grafo();
     
     bool gerarMatRand(int);
     bool reiniciar();
-    void exibirMat(int = -1);
+    void exibirMat(int = -1) const;
     
     int **prim();
     int **dijkstra();
     int **twiceAround();
+    
     int *DFS(int **);
     
-    int get(char []);
-    int buscarVert(int);
+    bool getValido() const;
+    int getNumVert() const;
+    int **getMatrizAdj() const;
+    int **const*getAlg() const;
     
-private:
+protected:
     bool valido;
     int  numVert;
     int  **matrizAdj;
