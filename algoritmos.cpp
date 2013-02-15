@@ -8,7 +8,9 @@
 #include "Grafo.h"
 #include <iostream>
 
-using namespace std;
+using std::cout;
+using std::cin;
+using std::endl;
 
 /**
  * ==== Algoritmos =====
@@ -123,20 +125,20 @@ int **Grafo::dijkstra() {
 
     return alg[1] = acm;
 }
-int **Grafo::twiceAround() {
+int Grafo::twiceAround() {
     // o grafo atual nao e valido. Nada a fazer.
     if (valido == false)
-        return NULL;
+        return -1;
     
     int **mst, // arvore spanning minima
-            *lstVert, // lista de vertices visitados pelo DFS
-            lstLim = 2 * numVert - 1,
-
-            **chm = new int*[numVert], // matriz adj. do circuito hamiltoniano
-            i, j;
+        *lstVert, // lista de vertices visitados pelo DFS
+        lstLim = 2 * numVert - 1,
+        **chm = new int*[numVert], // matriz adj. do circuito hamiltoniano
+        i, j;
+        
     int custo = 0;
-
     mst = prim();
+    
     lstVert = DFS(mst);
 
     for (i = 0; i < numVert; i++) {
@@ -176,10 +178,84 @@ int **Grafo::twiceAround() {
         custo += chm[ lstVert[j] ][ lstVert[j - 1] ];
     }
 
-    cout << "Custo: " << custo << ". " << endl;
+    delete [] lstVert;
+    if (alg[2] != NULL) {
+        for (i = 0; i < numVert; i++)
+            delete [] alg[2][i];
+        
+        delete [] alg[2];
+        alg[2] = NULL;
+    }
+    alg[2] = chm;
+    
+    return custo;
+}
+int Grafo::twiceAroundComDijkstra() {
+    // o grafo atual nao e valido. Nada a fazer.
+    if (valido == false)
+        return -1;
+    
+    int **mst, // arvore spanning minima
+        *lstVert, // lista de vertices visitados pelo DFS
+        lstLim = 2 * numVert - 1,
+        **chm = new int*[numVert], // matriz adj. do circuito hamiltoniano
+        i, j;
+        
+    int custo = 0;
+
+    mst = dijkstra();
+    
+    lstVert = DFS(mst);
+
+    for (i = 0; i < numVert; i++) {
+        chm[i] = new int[numVert];
+        for (j = 0; j < numVert; j++)
+            chm[i][j] = 0;
+    }
+
+    //exibirMat(0);
+    /*cout << "== DFS ==" << endl;
+    for (i = 0; i < lstLim; i++)
+        cout << lstVert[i] << " ";
+    cout << "\n\n";*/
+
+    i = 0;
+    while (i < lstLim - 1) {
+        int j = i + 1;
+
+        while (j < lstLim - 1)
+            if (lstVert[j] != lstVert[i])
+                j++;
+            else {
+                for (int k = j; k < lstLim - 1; k++)
+                    lstVert[k] = lstVert[k + 1];
+                lstLim--;
+            }
+        i++;
+    }
+
+    /*cout << "== Enxugamento ==" << endl;
+    for (i = 0; i < lstLim; i++)
+        cout << lstVert[i] << " ";
+    cout << "\n\n"; */
+
+    for (j = 1; j < lstLim; j++) {
+        chm[ lstVert[j] ][ lstVert[j - 1] ] = chm[ lstVert[j - 1] ][ lstVert[j] ] = matrizAdj[ lstVert[j - 1] ][ lstVert[j] ];
+        custo += chm[ lstVert[j] ][ lstVert[j - 1] ];
+    }
 
     delete [] lstVert;
-    return alg[2] = chm;
+    
+    if (alg[2] != NULL) {
+        for (i = 0; i < numVert; i++)
+            delete [] alg[2][i];
+        
+        delete [] alg[2];
+        alg[2] = NULL;
+    }
+    alg[2] = chm;
+    
+    return custo;
 }
 int *Grafo::DFS(int **_matriz) {
     int *lstVertVisit = new int[2 * numVert - 1],

@@ -64,6 +64,14 @@
       </item>
       <item path="src/berlin52" ex="false" tool="3" flavor2="0">
       </item>
+      <item path="src/berlin52.opt.tour" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/teste" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/wi.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/xqf131.txt" ex="false" tool="3" flavor2="0">
+      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -97,6 +105,14 @@
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="src/berlin52" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/berlin52.opt.tour" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/teste" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/wi.txt" ex="false" tool="3" flavor2="0">
+      </item>
+      <item path="src/xqf131.txt" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

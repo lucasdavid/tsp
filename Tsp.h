@@ -15,13 +15,14 @@ public:
     Tsp();
     Tsp(char []);
     
-    void resolver();
+    int resTwiAroundOrig();
+    int resTwiAroundDijk();
+    void cmpEntreTwiceArounds(const int = 10, const int = 10);
+    
     bool lerGrDoArq(const char []);
     bool gerarGrRand(int = 4);
 private:
     Grafo g;
-
 };
 
 #endif	/* TSP_H */
-

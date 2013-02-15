@@ -27,7 +27,8 @@ public:
     
     int **prim();
     int **dijkstra();
-    int **twiceAround();
+    int twiceAround();
+    int twiceAroundComDijkstra();
     
     int *DFS(int **);
     
