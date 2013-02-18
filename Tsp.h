@@ -13,11 +13,14 @@
 class Tsp {
 public:
     Tsp();
-    Tsp(char []);
+    Tsp(const char []);
+    Tsp(const int);
     
     int resTwiAroundOrig();
     int resTwiAroundDijk();
-    void cmpEntreTwiceArounds(const int = 10, const int = 10);
+    int resNovoMetodoACM();
+    
+    void cmpTwiAround(const int = 10, const int = 10, const bool = false, const bool = false);
     
     bool lerGrDoArq(const char []);
     bool gerarGrRand(int = 4);

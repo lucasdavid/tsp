@@ -15,6 +15,7 @@ using std::endl;
 /**
  * ==== Algoritmos =====
  */
+
 /**
  * Referencia: este algoritmo foi retirado do material de Paulo Feofiloff - IME-USP. Tendo sido realizado uma
  * unica alteracao: utilizar o valor -1, que representa infinito, ao inves de uma variavel pesoMAX como limitante
@@ -75,7 +76,7 @@ int **Grafo::prim() {
  * 
  * http://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/dijkstra.html
  */
-int **Grafo::dijkstra() {
+int **Grafo::dijkstra(const int _vertInicial) {
     // o grafo atual nao e valido. Nada a fazer.
     if (valido == false)
         return NULL;
@@ -95,12 +96,12 @@ int **Grafo::dijkstra() {
 
     for (w = 0; w < numVert; w++) {
         parent[w] = -1;
-        cost[w] = matrizAdj[0][w];
-        frj[w] = 0;
+        cost[w] = matrizAdj[_vertInicial][w];
+        frj[w] = _vertInicial;
     }
     
-    parent[0] = 0;
-    cost[0] = 0;
+    parent[_vertInicial] = _vertInicial;
+    cost[_vertInicial] = 0;
     
     while (1) {
         int mincost = -1;
@@ -122,6 +123,12 @@ int **Grafo::dijkstra() {
     delete [] frj;
     delete [] cost;
     delete [] parent;
+    
+    if (alg[1]) {
+        for (int i = 0; i < numVert; i++)
+            delete [] alg[1][i];
+        delete [] alg[1];
+    }
 
     return alg[1] = acm;
 }
@@ -184,7 +191,6 @@ int Grafo::twiceAround() {
             delete [] alg[2][i];
         
         delete [] alg[2];
-        alg[2] = NULL;
     }
     alg[2] = chm;
     
@@ -192,8 +198,7 @@ int Grafo::twiceAround() {
 }
 int Grafo::twiceAroundComDijkstra() {
     // o grafo atual nao e valido. Nada a fazer.
-    if (valido == false)
-        return -1;
+    if (valido == false) return -1;
     
     int **mst, // arvore spanning minima
         *lstVert, // lista de vertices visitados pelo DFS
@@ -246,14 +251,34 @@ int Grafo::twiceAroundComDijkstra() {
 
     delete [] lstVert;
     
-    if (alg[2] != NULL) {
+    if (alg[3] != NULL) {
         for (i = 0; i < numVert; i++)
-            delete [] alg[2][i];
+            delete [] alg[3][i];
         
-        delete [] alg[2];
-        alg[2] = NULL;
+        delete [] alg[3];
+        alg[3] = NULL;
     }
-    alg[2] = chm;
+    alg[3] = chm;
+    
+    return custo;
+}
+int Grafo::novoMetodoACM() {
+    // o grafo atual nao e valido. Nada a fazer.
+    if (valido == false) return -1;
+    
+    int **acm = dijkstra(),
+        *percurso = DFS(acm),
+        *arestas = new int[numVert*numVert],
+        custo, i, j;
+    const int tamPerc = 2*numVert -1;
+    
+    for (i = 0; i < numVert; i++)
+        arestas[i] = 0;
+    
+    //TODO
+    
+    delete [] arestas;
+    delete [] percurso;
     
     return custo;
 }

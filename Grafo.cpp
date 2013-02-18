@@ -180,7 +180,7 @@ void Grafo::exibirMat(int _alg) const {
             cout << "Matriz invalida";
         else
             for (int i = 0; i < numVert; i++) {
-                for (int j = i +1; j < numVert; j++)
+                for (int j = 0; j < numVert; j++)
                     cout << tmpMat[i][j] << " ";
                 cout << endl;
             }

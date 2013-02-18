@@ -25,8 +25,12 @@ using std::stringstream;
 Tsp::Tsp() {
     srand(time(0));
 }
-Tsp::Tsp(char _arq[]) {
+Tsp::Tsp(const char _arq[]) {
     lerGrDoArq(_arq);
+}
+Tsp::Tsp(const int _numVert) {
+    srand(time(0));
+    g.gerarMatRand(_numVert);    
 }
 
 /**
@@ -60,12 +64,14 @@ bool Tsp::lerGrDoArq(const char _arq[]) {
                 ++i;
                 j = 0;
                 
-                while (linha[i + j] != ' ') j++; // decodifica coordenada X
+                while (linha[i + j] != ' ')
+                    j++; // decodifica coordenada X
                 stringstream x(linha.substr(i, j - 2));
                 
                 i = i + j + 1;
                 j = 0;
-                while (linha[i + j] != '.' && linha[i + j]) j++; // decodifica coordenada Y
+                while (linha[i + j] && linha[i + j] != '.')
+                    j++; // decodifica coordenada Y
                 stringstream y(linha.substr(i, j));
                 
                 if (!(x >> lstVert[k][0]) || !(y >> lstVert[k][1])) {
@@ -145,29 +151,34 @@ int Tsp::resTwiAroundDijk() {
     return custCirc;
 }
 /**
- * Compara o metodo original ao twice-around que utiliza a arvores de caminhos minimos como entrada
- * @_numInter vezes, em relacao ao custo do circuito obtido (quando menor, melhor).
+ * Compara os algoritmos Twice-around original ao modificado (que utiliza a arvores de caminhos minimos 
+ * como entrada) @_numInter vezes, em relacao ao custo do circuito obtido (quando menor, melhor).
  * @param _numInter numero de vezes que os circuitos sao comparados.
- * @param _intervTamMat intervalo que o tamanho da matriz de adj criada pode assumir
+ * @param _intervTamMat intervalo do tamanho que uma matriz de adj. criada pode assumir.
  */
-void Tsp::cmpEntreTwiceArounds(const int _numInter, const int _intervTamMat) {
+void Tsp::cmpTwiAround(const int _numInter, const int _intervTamMat, const bool _exibirMat, const bool _exibirCustos) {
     int tCustOrig, tCustDijk, tContOrig, tContDijk, tTam;
     
     tContOrig = tContDijk = 0;
     
-    if (_numInter < 1)
+    if (_numInter < 1 || _intervTamMat < 1)
         cout << "Erro: numero de interacoes invalido." << endl;
     else {
         for (int i = 0; i < _numInter; i++) {
             tTam = 0; // acha um tamanho randomico para a matriz de adj.
             while (tTam == 0) tTam = rand() %_intervTamMat;
+            
             gerarGrRand(tTam);
+            if (_exibirMat == true)
+                g.exibirMat();
 
             tCustOrig = resTwiAroundOrig(); // calc. com o custo pelo twice-around original
             tCustDijk = resTwiAroundDijk(); // calc. com o custo pelo twice-around modificado
             
-            //cout << "Custo (tw-ar original): " << tCustOrig << ".\n";
-            //cout << "Custo (tw-ar dijkstra): " << tCustDijk << ".\n\n";
+            if (_exibirCustos == true) {
+                cout << "Custo (tw-ar original): " << tCustOrig << ".\n"
+                     << "Custo (tw-ar dijkstra): " << tCustDijk << ".\n\n";
+            }
             
             if (tCustOrig < tCustDijk)
                 tContOrig++;
@@ -178,4 +189,12 @@ void Tsp::cmpEntreTwiceArounds(const int _numInter, const int _intervTamMat) {
         cout << "N. de vezes que o alg orig foi melhor: " << tContOrig << endl
              << "N. de vezes que o alg dijk foi melhor: " << tContDijk << endl;
     }
+}
+int Tsp::resNovoMetodoACM() {
+    int tCust;
+    g.exibirMat();
+    tCust = g.novoMetodoACM();
+    
+    cout << "Custo: " << tCust << endl;
+    return tCust;
 }

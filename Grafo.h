@@ -10,7 +10,7 @@
 
 #define INTERV_DESVIO 10
 #define MIN_AREST 1 // CUIDADO! Mudar isso para 0 tira a garantia que o grafo seja o K-N.
-#define NUM_ALG 3
+#define NUM_ALG 4
 
 class Grafo {
 public:
@@ -26,9 +26,10 @@ public:
     void exibirMat(int = -1) const;
     
     int **prim();
-    int **dijkstra();
+    int **dijkstra(const int = 0);
     int twiceAround();
     int twiceAroundComDijkstra();
+    int novoMetodoACM();
     
     int *DFS(int **);
     
