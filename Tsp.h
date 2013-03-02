@@ -18,9 +18,10 @@ public:
     
     int resTwiAroundOrig();
     int resTwiAroundDijk();
-    int resNovoMetodoACM();
+    int resOcorrEmSPT();
     
     void cmpTwiAround(const int = 10, const int = 10, const bool = false, const bool = false);
+    void cmpTwiAroundEOcorrSPT(const int = 10, const int = 10, const bool = false, const bool = false);
     
     bool lerGrDoArq(const char []);
     bool gerarGrRand(int = 4);

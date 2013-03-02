@@ -18,16 +18,10 @@ using std::endl;
 Grafo::Grafo() {
     valido = false;
     matrizAdj = NULL;
-
-    for (int i = 0; i < NUM_ALG; i++)
-        alg[i] = NULL;
 }
 Grafo::Grafo(int _numVert) {
     valido = false;
     matrizAdj = NULL;
-
-    for (int i = 0; i < NUM_ALG; i++)
-        alg[i] = NULL;
 
     gerarMatRand(_numVert);
 }
@@ -36,14 +30,10 @@ Grafo::Grafo(int** _mat, int _tam) {
     matrizAdj = NULL;
     numVert = _tam;
     
-    for (int i = 0; i < NUM_ALG; i++)
-        alg[i] = NULL;
-       
     carregarMatExist(_mat, _tam);
 }
 Grafo::Grafo(const Grafo& _orig) {
     int **tMatrizAdj = _orig.getMatrizAdj();
-    int **const*tAlg = _orig.getAlg();
     int tNumVert     = _orig.getNumVert(),
         tValido      = _orig.getValido();
 
@@ -58,10 +48,6 @@ Grafo::Grafo(const Grafo& _orig) {
             for (int j = 0; j < numVert; j++)
                 matrizAdj[i][j] = tMatrizAdj[i][j];
         }
-        for (int i = 0; i < NUM_ALG; i++)
-            alg[i] = (tAlg[i] != NULL) // TODO: copia profunda
-                   ? tAlg[i]
-                   : NULL;
     }
 }
 Grafo::~Grafo() {
@@ -83,16 +69,6 @@ bool Grafo::reiniciar() {
             delete [] matrizAdj[i];
         delete [] matrizAdj;
         matrizAdj = NULL;
-
-        // remove todas as matrizes de algoritmos que possivelmente foram aplicados.
-        for (int i = 0; i < NUM_ALG; i++)
-            if (alg[i] != NULL) {
-                for (int j = 0; j < numVert; j++)
-                    delete [] alg[i][j];
-                delete [] alg[i];
-
-                alg[i] = NULL;
-            }
 
         valido = false;
         return true;
@@ -135,17 +111,18 @@ bool Grafo::gerarMatRand(int _numVert) {
         for (int j = 0; j < _numVert; j++)
             matrizAdj[i][j] = 0;
     }
-
+    
     // Preenchimento randomico.
     // Esse procedimento pode demorar exaustivamente
     // para grafos com um grande numero de vertices.
-    for (int i = 0; i < _numVert; i++)
-        for (int j = i + 1; j < _numVert; j++) {
+    for (int i = 0; i < _numVert; i++) {
+        for (int j = i +1; j < _numVert; j++) {        
             matrizAdj[i][j] = matrizAdj[j][i] = rand() % INTERV_DESVIO;
 
             if (matrizAdj[i][j] < MIN_AREST)
                 matrizAdj[i][j] = matrizAdj[j][i] = MIN_AREST;
         }
+    }
 
     numVert = _numVert;
     return valido = true;
@@ -155,27 +132,17 @@ bool Grafo::gerarMatRand(int _numVert) {
  * como parametro, ou a matriz de algum dos algoritmos aplicados, contida em uma
  * posicao do vetor Grafo.alg[].
  * @param:
- *     int @_alg, um indice valido para o vetor Grafo.alg[] (default = -1).
+ *     int @_mat, um indice valido para o vetor Grafo.alg[] (default = -1).
  * @return: nada.
  */
-void Grafo::exibirMat(int _alg) const {
+void Grafo::exibirMat(int **_mat) const {
     if (valido == false)
         cout << "Erro: o objeto nao e um grafo valido." << endl;
     else {
-        int **tmpMat = (_alg == -1)
-                ? matrizAdj
-                : alg[_alg];
+        int **tmpMat = (_mat == 0)
+                     ? matrizAdj
+                     : _mat;
 
-        if (_alg == -1)
-            cout << "== Grafo orig. ==";
-        else if (_alg == 0)
-            cout << "== Prim ==";
-        else if (_alg == 1)
-            cout << "== Dijkstra ==";
-        else
-            cout << "== Twice-around ==";
-        cout << endl;
-        
         if (tmpMat == NULL)
             cout << "Matriz invalida";
         else
@@ -188,6 +155,17 @@ void Grafo::exibirMat(int _alg) const {
         cout << endl;
     }
 }
+bool Grafo::delArvore(int **_arv) {
+    if (_arv == NULL)
+        return false;
+    else {
+        for (int i = 0; i < numVert; i++)
+            delete [] _arv[i];
+        delete [] _arv;
+        
+        return true;
+    }
+}
 
 bool Grafo::getValido() const {
     return valido;
@@ -197,7 +175,4 @@ int  Grafo::getNumVert() const {
 }
 int**Grafo::getMatrizAdj() const {
     return matrizAdj;
-}
-int** const*Grafo::getAlg() const {
-    return alg;
 }

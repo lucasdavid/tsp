@@ -114,11 +114,7 @@ bool Tsp::lerGrDoArq(const char _arq[]) {
     }
 }
 bool Tsp::gerarGrRand(int _numVert) {
-    bool ret;
-
-    ret = g.gerarMatRand(_numVert); // gera matri de adj. randomica
-    //if (ret == true) g.exibirMat(); // exibe grafo gerado.
-    return ret;
+    return g.gerarMatRand(_numVert); // gera matri de adj. randomica
 }
 
 /**
@@ -140,16 +136,24 @@ int Tsp::resTwiAroundOrig() {
  * Este algoritmo utilizara o algoritmo de dijkstra como entrada.
  */
 int Tsp::resTwiAroundDijk() {
-    int custCirc = 0;
+    int custCirc = -1;
     if (g.getValido() == false)
         cout << "Grafo invalido, nao ha nada para resolver." << endl;
-    else {
+    else
         custCirc = g.twiceAroundComDijkstra();
-        //g.exibirMat(2); // exibir circuito hamiltoniano
-    }
     
     return custCirc;
 }
+int Tsp::resOcorrEmSPT() {
+    int tCust = -1;
+    if (g.getValido() == false)
+        cout << "Grafo invalido, nao ha nada para resolver." << endl;
+    else
+        tCust = g.OcorrEmSPT();
+    
+    return tCust;
+}
+
 /**
  * Compara os algoritmos Twice-around original ao modificado (que utiliza a arvores de caminhos minimos 
  * como entrada) @_numInter vezes, em relacao ao custo do circuito obtido (quando menor, melhor).
@@ -157,9 +161,9 @@ int Tsp::resTwiAroundDijk() {
  * @param _intervTamMat intervalo do tamanho que uma matriz de adj. criada pode assumir.
  */
 void Tsp::cmpTwiAround(const int _numInter, const int _intervTamMat, const bool _exibirMat, const bool _exibirCustos) {
-    int tCustOrig, tCustDijk, tContOrig, tContDijk, tTam;
+    int tCustTwiAround, tCustOcorrSPT, tContTwiAround, tContOcorrSPT, tTam;
     
-    tContOrig = tContDijk = 0;
+    tContTwiAround = tContOcorrSPT = 0;
     
     if (_numInter < 1 || _intervTamMat < 1)
         cout << "Erro: numero de interacoes invalido." << endl;
@@ -172,29 +176,66 @@ void Tsp::cmpTwiAround(const int _numInter, const int _intervTamMat, const bool 
             if (_exibirMat == true)
                 g.exibirMat();
 
-            tCustOrig = resTwiAroundOrig(); // calc. com o custo pelo twice-around original
-            tCustDijk = resTwiAroundDijk(); // calc. com o custo pelo twice-around modificado
+            tCustTwiAround = resTwiAroundOrig(); // calc. com o custo pelo twice-around original
+            tCustOcorrSPT = resTwiAroundDijk(); // calc. com o custo pelo twice-around modificado
             
             if (_exibirCustos == true) {
-                cout << "Custo (tw-ar original): " << tCustOrig << ".\n"
-                     << "Custo (tw-ar dijkstra): " << tCustDijk << ".\n\n";
+                cout << "Custo (tw-ar original): " << tCustTwiAround << ".\n"
+                     << "Custo (tw-ar dijkstra): " << tCustOcorrSPT << ".\n\n";
             }
             
-            if (tCustOrig < tCustDijk)
-                tContOrig++;
-            else if (tCustOrig > tCustDijk)
-                tContDijk++;
+            if (tCustTwiAround < tCustOcorrSPT)
+                tContTwiAround++;
+            else if (tCustTwiAround > tCustOcorrSPT)
+                tContOcorrSPT++;
         }
         
-        cout << "N. de vezes que o alg orig foi melhor: " << tContOrig << endl
-             << "N. de vezes que o alg dijk foi melhor: " << tContDijk << endl;
+        cout << "N. de vezes que o alg orig foi melhor: " << tContTwiAround << endl
+             << "N. de vezes que o alg dijk foi melhor: " << tContOcorrSPT << endl;
     }
 }
-int Tsp::resNovoMetodoACM() {
-    int tCust;
-    g.exibirMat();
-    tCust = g.novoMetodoACM();
+
+/**
+ * Compara os algoritmos Twice-around original ao metodo de ocorrencia em shortest-path trees
+ * @_numInter vezes, em relacao ao custo do circuito obtido (quando menor, melhor).
+ * @param _numInter numero de vezes que os circuitos sao comparados.
+ * @param _intervTamMat intervalo do tamanho que uma matriz de adj. criada pode assumir.
+ */
+void Tsp::cmpTwiAroundEOcorrSPT(const int _numInter, const int _intervTamMat, const bool _exibirMat, const bool _exibirCustos) {
     
-    cout << "Custo: " << tCust << endl;
-    return tCust;
+    int tCustTwiAround,
+        tCustOcorrSPT,
+        tContTwiAround,
+        tContOcorrSPT,
+        tTam;
+    
+    tContTwiAround = tContOcorrSPT = 0;
+    
+    if (_numInter < 1 || _intervTamMat < 1)
+        cout << "Erro: numero de interacoes invalido." << endl;
+    else {
+        for (int i = 0; i < _numInter; i++) {
+            tTam = 0; // acha um tamanho randomico para a matriz de adj.
+            while (tTam == 0)
+                tTam = rand() %_intervTamMat;
+            
+            gerarGrRand(tTam);
+            if (_exibirMat) g.exibirMat();
+
+            tCustTwiAround = resTwiAroundOrig(); // calc. com o custo pelo twice-around original
+            tCustOcorrSPT = resOcorrEmSPT(); // calc. com o custo pelo metodo de ocorrencia em shortest-path trees
+            
+            if (_exibirCustos)
+                cout << "Custo (tw-ar original): " << tCustTwiAround << ".\n"
+                     << "Custo (shortest-path): " << tCustOcorrSPT << ".\n\n";
+            
+            if (tCustTwiAround < tCustOcorrSPT)
+                tContTwiAround++;
+            else if (tCustTwiAround > tCustOcorrSPT)
+                tContOcorrSPT++;
+        }
+        
+        cout << "N. de vezes que o alg orig foi melhor: " << tContTwiAround << endl
+             << "N. de vezes que o shortest-path foi melhor: " << tContOcorrSPT << endl;
+    }
 }
