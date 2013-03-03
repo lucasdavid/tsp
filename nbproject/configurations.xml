@@ -10,13 +10,6 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
-      <logicalFolder name="src" displayName="src" projectFiles="true">
-        <itemPath>src/berlin52</itemPath>
-        <itemPath>src/berlin52.opt.tour</itemPath>
-        <itemPath>src/teste</itemPath>
-        <itemPath>src/wi.txt</itemPath>
-        <itemPath>src/xqf131.txt</itemPath>
-      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -62,16 +55,6 @@
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
       </item>
-      <item path="src/berlin52" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/berlin52.opt.tour" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/teste" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/wi.txt" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/xqf131.txt" ex="false" tool="3" flavor2="0">
-      </item>
     </conf>
     <conf name="Release" type="1">
       <toolsSet>
@@ -103,16 +86,6 @@
       <item path="algoritmos.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="main.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="src/berlin52" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/berlin52.opt.tour" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/teste" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/wi.txt" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="src/xqf131.txt" ex="false" tool="3" flavor2="0">
       </item>
     </conf>
   </confs>

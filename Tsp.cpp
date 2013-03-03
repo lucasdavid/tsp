@@ -20,6 +20,7 @@ using std::cin;
 using std::endl;
 using std::string;
 using std::ifstream;
+using std::istringstream;
 using std::stringstream;
 
 Tsp::Tsp() {
@@ -28,9 +29,9 @@ Tsp::Tsp() {
 Tsp::Tsp(const char _arq[]) {
     lerGrDoArq(_arq);
 }
-Tsp::Tsp(const int _numVert) {
+Tsp::Tsp(const int tNumVert) {
     srand(time(0));
-    g.gerarMatRand(_numVert);    
+    g.gerarMatRand(tNumVert);    
 }
 
 /**
@@ -39,89 +40,131 @@ Tsp::Tsp(const int _numVert) {
  * @return verdadeiro, caso a matriz tenha sido carregada com sucesso. Falso caso contrario.
  */
 bool Tsp::lerGrDoArq(const char _arq[]) {
-    string linha;
+    string linha, elem;
     ifstream inst_tsp(_arq);
 
-    int lstVert[52][2], **tMat;
-    int tamLstVert = 52,
-            i, j, k = 0;
+    int **tMat,
+        tNumVert,
+        i, j, k = 0,
+        estadoAtual = 0;
     
+    double *lstVert[2];
     bool ret;
-
-    if (inst_tsp.is_open() == false) {
+    
+    if (!inst_tsp.is_open()) {
         cout << "Arquivo inacessivel ou nao existente.";
         return false;
-    } else {
-        while (inst_tsp.good()) {
-            getline(inst_tsp, linha);
-
-            // nao e um digito, portanto faz parte de um cabecalho.
-            if (isdigit(linha[0]) == false) {
-                cout << linha << endl;
-            } else {
-                i = 1;
-                while (linha[i] != ' ') i++; // percorre ate o x: |123 x23 123|
-                ++i;
-                j = 0;
+    }
+    
+    while (inst_tsp.good() && !estadoAtual < 3) {
+        getline(inst_tsp, linha);
+        
+        // leitura do cabecalho.
+        if (estadoAtual == 0) {
+            cout << linha << endl;
+            if (linha.substr(0, 9) == "DIMENSION") {
+                linha = linha.substr(11, linha.length() -11);
                 
-                while (linha[i + j] != ' ')
-                    j++; // decodifica coordenada X
-                stringstream x(linha.substr(i, j - 2));
-                
-                i = i + j + 1;
-                j = 0;
-                while (linha[i + j] && linha[i + j] != '.')
-                    j++; // decodifica coordenada Y
-                stringstream y(linha.substr(i, j));
-                
-                if (!(x >> lstVert[k][0]) || !(y >> lstVert[k][1])) {
+                stringstream _sNumVert(linha);
+                if (!(_sNumVert >> tNumVert)) {
                     cout << "Erro de conversao!";
                     return false;
                 }
-                k++;
                 
-                cout << linha << endl;
+                lstVert[0] = new double[tNumVert];
+                lstVert[1] = new double[tNumVert];
+                
+                // criando matriz de adj.
+                tMat = new int*[tNumVert];
+                for (i = 0; i < tNumVert; i++) {
+                    tMat[i] = new int[tNumVert];
+                    for (j = 0; j < tNumVert; j++)
+                        tMat[i][j] = 0;
+                } i = j = 0;
             }
+            else if (linha == "EDGE_WEIGHT_SECTION")
+                estadoAtual = 1;
+            else if (linha == "DISPLAY_DATA_SECTION" || linha == "NODE_COORD_SECTION")
+                estadoAtual = 2;
         }
-        inst_tsp.close();
-        
-        // criando matriz de adj.
-        tMat = new int*[tamLstVert];
-        for (i = 0; i < tamLstVert; i++) {
-            tMat[i] = new int[tamLstVert];
-            for (j = 0; j < tamLstVert; j++)
-                tMat[i][j] = 0;
-        }
-        
-        /*
-         * Obtem a distancia entre cada uma das cidades a partir do valores lidos do arquivo.
-         * Estas mesmas sao calculadas pela da equacao de Pitagoras: x**2 +y**2 = z**2
-         * Onde:
-         * x = pos X da cidade A - pos X da cidade B
-         * x = pos Y da cidade A - pos Y da cidade B
-         * z = distancia entre as cidades A e B.
-         */
-        for (i = 0; i < tamLstVert; i++) {
-            for (j = i +1; j < tamLstVert; j++) { // distancia euclidiana
-                int dx = pow(lstVert[i][0] -lstVert[j][0], 2);
-                int dy = pow(lstVert[i][1] -lstVert[j][1], 2);
+        // arq. codif. no formato EDGE_WEIGHT_SECTION.
+        // Enquanto existem vertices, decodifica suas distancias
+        else if (estadoAtual == 1) {
+            if (i >= tNumVert -1) { // todos os vertices ja foram analisados
+                estadoAtual = 3;
+                continue;
+            }
+            
+            istringstream iss(linha);
+            
+            j = i +1;
+            while (iss && j < tNumVert) {
+                iss >> elem;
+                stringstream _sElem(elem);
                 
+                if(!(_sElem >> tMat[i][j])) {
+                    cout << "ERRO DE CONVERSAO!" << endl;
+                    return false;
+                }
+                
+                tMat[j][i] = tMat[i][j];
+                j++;
+            }
+            i++;
+        }
+        else if (estadoAtual == 2) {
+            if (k >= tNumVert) { // todos os vertices ja foram analisados
+                estadoAtual = 4;
+                continue;
+            }
+            
+            istringstream iss(linha);
+            iss >> elem; // discarta indexador do vertice
+            
+            iss >> elem;
+            stringstream _sX(elem);
+            iss >> elem;
+            stringstream _sY(elem);
+
+            if(!(_sX >> lstVert[0][k]) || !(_sY >> lstVert[1][k])) {
+                cout << "ERRO DE CONVERSAO!" << endl;
+                return false;
+            }
+            k++;
+        }
+    }
+    inst_tsp.close();
+
+    /* Os dados foram recebidos de NODE_COORD_SECTION. Acha a distância euclidiana entre os vertices pelas
+     * coordenadas. Estas mesmas sao calculadas pela da equacao de Pitagoras: x**2 +y**2 = z**2
+     * Onde:
+     * x = pos X da cidade A - pos X da cidade B
+     * x = pos Y da cidade A - pos Y da cidade B
+     * z = distancia entre as cidades A e B.
+     */
+    if (estadoAtual == 4)
+        for (i = 0; i < tNumVert; i++)
+            for (j = i +1; j < tNumVert; j++) { // distancia euclidiana
+                double dx = pow(lstVert[0][i] -lstVert[0][j], 2);
+                double dy = pow(lstVert[1][i] -lstVert[1][j], 2);
+
                 tMat[j][i] = tMat[i][j] = sqrt(dx +dy);
             }
-        }
-        
-        return ret = g.carregarMatExist(tMat, tamLstVert);
-    }
+    
+    delete [] lstVert[0];
+    delete [] lstVert[1];
+
+    return ret = g.carregarMatExist(tMat, tNumVert);
 }
-bool Tsp::gerarGrRand(int _numVert) {
-    return g.gerarMatRand(_numVert); // gera matri de adj. randomica
+bool Tsp::gerarGrRand(int tNumVert) {
+    return g.gerarMatRand(tNumVert); // gera matri de adj. randomica
 }
 
 /**
  * Invoca o algoritmo twiceAround para resolver o TSP e exibe a resposta.
  */
 int Tsp::resTwiAroundOrig() {
-    int custCirc = 0;
+    int custCirc = -1;
     if (g.getValido() == false)
         cout << "Grafo invalido, nao ha nada para resolver." << endl;
     else {
@@ -144,6 +187,10 @@ int Tsp::resTwiAroundDijk() {
     
     return custCirc;
 }
+/**
+ * Invoca o algoritmo de ocorrencia em Shortest-path trees para resolver o TSP
+ * e exibe a resposta.
+ */
 int Tsp::resOcorrEmSPT() {
     int tCust = -1;
     if (g.getValido() == false)
@@ -239,3 +286,4 @@ void Tsp::cmpTwiAroundEOcorrSPT(const int _numInter, const int _intervTamMat, co
              << "N. de vezes que o shortest-path foi melhor: " << tContOcorrSPT << endl;
     }
 }
+
