@@ -31,7 +31,7 @@ public:
     int OcorrEmSPT();
     int *DFS(int **);
     
-    bool delArvore(int **);
+    bool delMatriz(int **);
     
     bool getValido() const;
     int getNumVert() const;

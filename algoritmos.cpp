@@ -108,9 +108,14 @@ int **Grafo::dijkstra(const int _vertInicial, int **_acm) {
     
     while (1) {
         int mincost = -1;
-        for (w = 0; w < numVert; w++)
-            if (parent[w] == -1 && (mincost > cost[w] || mincost == -1))
+        for (w = 0; w < numVert; w++) {
+            if (parent[w] != -1 || cost[w] == 0)
+                continue; // vert ja alcancado ou nao possui aresta com vert atual.
+            
+            // se menor que mincost ou mincost == infinito
+            if (mincost > cost[w] || mincost == -1)
                 mincost = cost[w0 = w];
+        }
         if (mincost == -1) break;
         parent[w0] = frj[w0];
         for (w = 0; w < numVert; w++)
@@ -121,7 +126,8 @@ int **Grafo::dijkstra(const int _vertInicial, int **_acm) {
     }
     
     for (w = 0; w < numVert; w++)
-        acm[ w ][ parent[w] ] = acm[ parent[w] ][ w ] = matrizAdj[ w ][ parent[w] ];
+        if (parent[w] != -1 && cost[w] != 0)
+            acm[ w ][ parent[w] ] = acm[ parent[w] ][ w ] = matrizAdj[ w ][ parent[w] ];
     
     delete [] frj;
     delete [] cost;
@@ -197,7 +203,7 @@ int Grafo::twiceAround() {
     for (i = 1; i < lstLim; i++)
         custo += matrizAdj[ lstVert[i -1] ][ lstVert[i] ];
 
-    delArvore(mst);
+    delMatriz(mst);
     delete [] lstVert;
                 
     return custo;
@@ -245,7 +251,7 @@ int Grafo::twiceAroundComDijkstra() {
     for (i = 1; i < lstLim; i++)
         custo += matrizAdj[ lstVert[i -1] ][ lstVert[i] ];
     
-    delArvore(spt);
+    delMatriz(spt);
     delete [] lstVert;
     
     return custo;
@@ -274,7 +280,7 @@ int Grafo::OcorrEmSPT() {
                 if (tAcm[i][j] != 0)
                     arPassadas[i][j]++;
     }
-    delArvore(tAcm);
+    delMatriz(tAcm);
     
     /*cout << "\nArestCaminhadas: " << endl;
     for (i = 0; i < numVert; i++) {

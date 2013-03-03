@@ -155,7 +155,7 @@ void Grafo::exibirMat(int **_mat) const {
         cout << endl;
     }
 }
-bool Grafo::delArvore(int **_arv) {
+bool Grafo::delMatriz(int **_arv) {
     if (_arv == NULL)
         return false;
     else {

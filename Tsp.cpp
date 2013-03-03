@@ -263,7 +263,7 @@ void Tsp::cmpTwiAroundEOcorrSPT(const int _numInter, const int _intervTamMat, co
     else {
         for (int i = 0; i < _numInter; i++) {
             tTam = 0; // acha um tamanho randomico para a matriz de adj.
-            while (tTam == 0)
+            while (tTam <= 1)
                 tTam = rand() %_intervTamMat;
             
             gerarGrRand(tTam);
@@ -282,7 +282,9 @@ void Tsp::cmpTwiAroundEOcorrSPT(const int _numInter, const int _intervTamMat, co
                 tContOcorrSPT++;
         }
         
-        cout << "N. de vezes que o alg orig foi melhor: " << tContTwiAround << endl
+        cout << "N. de interacoes: " << _numInter << endl 
+             << "Intervalo de valores possiveis: (2, " << _intervTamMat << ")" << endl
+             << "N. de vezes que o alg orig foi melhor: " << tContTwiAround << endl
              << "N. de vezes que o shortest-path foi melhor: " << tContOcorrSPT << endl;
     }
 }

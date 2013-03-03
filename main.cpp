@@ -35,11 +35,6 @@ int main(int argc, char** argv) {
     Tsp t;
     t.cmpTwiAround(1000, 100);
     
-    /// * comparacao entre o twice-around original e o algoritmo de ocorrencia em shortest-path trees.
-    Tsp t;
-    t.cmpTwiAroundEOcorrSPT(1000, 100);
-    */
-    
     Tsp tsp("src/problemas/bayg29");
     //Tsp tsp("src/problemas/berlin52");
     //Tsp tsp("src/problemas/ch130");
@@ -47,7 +42,15 @@ int main(int argc, char** argv) {
     
     cout << "\nTwice-around original: " << tsp.resTwiAroundOrig() << endl
          << "Twice-around Dijkstra: " << tsp.resTwiAroundDijk() << endl
-         << "Ocorr Shortest - path: " << tsp.resOcorrEmSPT() << endl;
+         << "Ocorr Shortest - path: " << tsp.resOcorrEmSPT() << endl; 
+     
+    /// * comparacao entre o twice-around original e o algoritmo de ocorrencia em shortest-path trees.
+    Tsp t;
+    t.cmpTwiAroundEOcorrSPT(1000, 100);
+    */
+    
+    Tsp t;
+    t.cmpTwiAroundEOcorrSPT(1000);
     
     return 0;
 }

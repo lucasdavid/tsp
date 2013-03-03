@@ -25,6 +25,7 @@ public:
     
     bool lerGrDoArq(const char []);
     bool gerarGrRand(int = 4);
+    
 private:
     Grafo g;
 };
