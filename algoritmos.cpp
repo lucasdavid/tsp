@@ -19,7 +19,7 @@ using std::endl;
 /**
  * Referencia: este algoritmo foi retirado do material de Paulo Feofiloff - IME-USP. Tendo sido realizado uma
  * unica alteracao: utilizar o valor -1, que representa infinito, ao inves de uma variavel pesoMAX como limitante
- * superior para o peso das arPassadas.
+ * superior para o peso das aresCaminhadas.
  * 
  * http://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/prim.html
  */
@@ -84,11 +84,12 @@ int **Grafo::dijkstra(const int _vertInicial, int **_acm) {
     int **acm = _acm == NULL
               ? new int*[numVert]
               : _acm,
-        *cost = new int[numVert], 
-        *frj = new int[numVert],
+                      
+        *cost   = new int[numVert], 
+        *frj    = new int[numVert],
         *parent = new int[numVert],
         w, w0;
-            
+
     for (int i = 0; i < numVert; i++) {
         if (_acm == NULL)
             acm[i] = new int[numVert];
@@ -256,77 +257,78 @@ int Grafo::twiceAroundComDijkstra() {
     
     return custo;
 }
-int Grafo::OcorrEmSPT() {
+int Grafo::ocorrEmSPT() {
     // o grafo atual nao e valido. Nada a fazer.
     if (valido == false) return -1;
     
-    int **tAcm = new int*[numVert],
-        **arPassadas = new int*[numVert],
-        i, j, k;
-    
-    for (i = 0; i < numVert; i++) {
-        tAcm[i]       = new int[numVert];
-        arPassadas[i] = new int[numVert];
+    int **tAcm           = new int*[numVert],
+        **aresCaminhadas = new int*[numVert],
+        i, j, v0,
+        iVertInser,
         
-        for (j = 0; j < numVert; j++)
-            arPassadas[i][j] = 0;
-    }
-    
-    for (k = 0; k < numVert; k++) {
-        tAcm = dijkstra(k, tAcm);
-        
-        for (i = 0; i < numVert; i++)
-            for (j = 0; j < numVert; j++)
-                if (tAcm[i][j] != 0)
-                    arPassadas[i][j]++;
-    }
-    delMatriz(tAcm);
-    
-    /*cout << "\nArestCaminhadas: " << endl;
-    for (i = 0; i < numVert; i++) {
-        for (j = 0; j < numVert; j++)
-            cout << arPassadas[i][j] << " ";
-        cout << endl;
-    cout << endl;
-    }*/    
-    
-    bool *lstVertInseridos = new bool[numVert];
-    int numVertInseridos = 1,
+        vAlcancado = 0,
         vAtual = 0,
-        vAlcancado,
         custo = 0;
     
-    for (i = 1; i < numVert; i++)
-        lstVertInseridos[i] = false;
-    lstVertInseridos[vAtual] = true;
+    bool *lstVert = new bool[numVert];
     
-    while (numVertInseridos < numVert) {
-        vAlcancado = vAtual;
+    for (i = 0; i < numVert; i++) {
+        tAcm[i]           = new int[numVert];
+        aresCaminhadas[i] = new int[numVert];
         
-        for (i = 0; i < numVert; i++) {
-            if (lstVertInseridos[i])
-                continue; // O vertice I ja esta no circuito.
-            
-            // O caminho vAtual-i esta em mais ACMs que vAtual-vAlcancado
-            if (arPassadas[vAtual][i] > arPassadas[vAtual][vAlcancado])
-                vAlcancado = i;
-            // Ambos estao no mesmo numero de ACMs. Escolhe a de menor custo.
-            else if (arPassadas[vAtual][i] == arPassadas[vAtual][vAlcancado]
-                && matrizAdj[vAtual][i] <= matrizAdj[vAtual][vAlcancado])
-                vAlcancado = i;
-        }
-        
-        numVertInseridos++;
-        lstVertInseridos[vAlcancado] = true;
-        custo += matrizAdj[vAtual][vAlcancado];
-        vAtual = vAlcancado;
+        lstVert[i] = false;
     }
     
-    custo += matrizAdj[vAtual][0];
+    iVertInser = numVert;
+    
+    while (iVertInser > 1) {
+        for (i = 0; i < numVert; i++)
+            for (j = 0; j < numVert; j++)
+                aresCaminhadas[i][j] = 0;
+        
+        for (v0 = 0; v0 < numVert; v0++) {
+            if (lstVert[v0] == true)
+                continue;
+            
+            tAcm = dijkstra(v0, tAcm);
+            
+            for (i = 0; i < numVert; i++)
+                for (j = 0; j < numVert; j++)
+                    if (tAcm[i][j] != 0)
+                        aresCaminhadas[i][j]++;
+        }
+        
+        vAlcancado = vAtual;
+        for (v0 = 0; v0 < numVert; v0++) {
+            if (lstVert[v0] == true)
+                continue;
+            
+            if (aresCaminhadas[vAtual][v0] > aresCaminhadas[vAtual][vAlcancado])
+                vAlcancado = v0;
+            
+            else if (aresCaminhadas[vAtual][v0] == aresCaminhadas[vAtual][vAlcancado]
+                && matrizAdj[vAtual][v0] < matrizAdj[vAtual][vAlcancado])
+                vAlcancado = v0;
+        }
+        
+        custo += matrizAdj[vAtual][vAlcancado];
+        
+        // elimina o vertice de origem
+        for (i = 0; i < numVert; i++)
+            tAcm[vAtual][i] = tAcm[vAtual][i] = 0;        
+        lstVert[vAtual] = true;
+        vAtual = vAlcancado;
+        
+        iVertInser--;
+    }
+    
+    custo += matrizAdj[vAlcancado][0];
     
     for (i = 0; i < numVert; i++)
-        delete [] arPassadas[i];
-    delete [] arPassadas;
-    delete [] lstVertInseridos;
+        delete [] aresCaminhadas[i];
+    delete [] aresCaminhadas;
+    delete [] lstVert;
+    delMatriz(tAcm);
+    
     return custo;
 }

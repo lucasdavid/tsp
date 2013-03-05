@@ -28,7 +28,7 @@ public:
     int **dijkstra(const int = 0, int ** = 0);
     int twiceAround();
     int twiceAroundComDijkstra();
-    int OcorrEmSPT();
+    int ocorrEmSPT();
     int *DFS(int **);
     
     bool delMatriz(int **);

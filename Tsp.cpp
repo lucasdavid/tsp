@@ -30,7 +30,6 @@ Tsp::Tsp(const char _arq[]) {
     lerGrDoArq(_arq);
 }
 Tsp::Tsp(const int tNumVert) {
-    srand(time(0));
     g.gerarMatRand(tNumVert);    
 }
 
@@ -196,7 +195,7 @@ int Tsp::resOcorrEmSPT() {
     if (g.getValido() == false)
         cout << "Grafo invalido, nao ha nada para resolver." << endl;
     else
-        tCust = g.OcorrEmSPT();
+        tCust = g.ocorrEmSPT();
     
     return tCust;
 }

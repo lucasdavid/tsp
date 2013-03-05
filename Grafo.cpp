@@ -18,11 +18,13 @@ using std::endl;
 Grafo::Grafo() {
     valido = false;
     matrizAdj = NULL;
+    srand(time(0));
 }
 Grafo::Grafo(int _numVert) {
     valido = false;
     matrizAdj = NULL;
 
+    srand(time(0));
     gerarMatRand(_numVert);
 }
 Grafo::Grafo(int** _mat, int _tam) {

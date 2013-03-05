@@ -42,15 +42,18 @@ int main(int argc, char** argv) {
     
     cout << "\nTwice-around original: " << tsp.resTwiAroundOrig() << endl
          << "Twice-around Dijkstra: " << tsp.resTwiAroundDijk() << endl
-         << "Ocorr Shortest - path: " << tsp.resOcorrEmSPT() << endl; 
+         << "Ocorr Shortest - path: " << tsp.resOcorrEmSPT() << endl;
      
     /// * comparacao entre o twice-around original e o algoritmo de ocorrencia em shortest-path trees.
     Tsp t;
     t.cmpTwiAroundEOcorrSPT(1000, 100);
     */
     
-    Tsp t;
-    t.cmpTwiAroundEOcorrSPT(1000);
+    Tsp tsp("src/problemas/ali535.tsp");
+    
+    cout << "\nTwice-around original: " << tsp.resTwiAroundOrig() << endl
+         << "Twice-around Dijkstra: " << tsp.resTwiAroundDijk() << endl
+         << "Ocorr Shortest - path: " << tsp.resOcorrEmSPT() << endl;
     
     return 0;
 }
