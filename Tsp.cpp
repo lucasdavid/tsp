@@ -187,6 +187,19 @@ int Tsp::resTwiAroundDijk() {
     return custCirc;
 }
 /**
+ * Invoca o algoritmo de ocorrencia em Shortest-path trees para resolver o TSP simplificado
+ * e exibe a resposta.
+ */
+int Tsp::resOcorrEmSPTSimplificado() {
+    int tCust = -1;
+    if (g.getValido() == false)
+        cout << "Grafo invalido, nao ha nada para resolver." << endl;
+    else
+        tCust = g.ocorrEmSPTSimplificado();
+    
+    return tCust;
+}
+/**
  * Invoca o algoritmo de ocorrencia em Shortest-path trees para resolver o TSP
  * e exibe a resposta.
  */

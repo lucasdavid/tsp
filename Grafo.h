@@ -29,6 +29,7 @@ public:
     int twiceAround();
     int twiceAroundComDijkstra();
     int ocorrEmSPT();
+    int ocorrEmSPTSimplificado();
     int *DFS(int **);
     
     bool delMatriz(int **);

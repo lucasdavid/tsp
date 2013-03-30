@@ -19,6 +19,7 @@ public:
     int resTwiAroundOrig();
     int resTwiAroundDijk();
     int resOcorrEmSPT();
+    int resOcorrEmSPTSimplificado();
     
     void cmpTwiAround(const int = 10, const int = 10, const bool = false, const bool = false);
     void cmpTwiAroundEOcorrSPT(const int = 10, const int = 10, const bool = false, const bool = false);
