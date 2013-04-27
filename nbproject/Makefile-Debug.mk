@@ -35,10 +35,10 @@ OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/Grafo.o \
 	${OBJECTDIR}/Tsp.o \
 	${OBJECTDIR}/algoritmos.o \
-	${OBJECTDIR}/Grafo.o
+	${OBJECTDIR}/main.o
 
 
 # C Compiler Flags
@@ -65,10 +65,10 @@ ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tsp: ${OBJECTFILES}
 	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/tsp ${OBJECTFILES} ${LDLIBSOPTIONS}
 
-${OBJECTDIR}/main.o: main.cpp 
+${OBJECTDIR}/Grafo.o: Grafo.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Grafo.o Grafo.cpp
 
 ${OBJECTDIR}/Tsp.o: Tsp.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -80,10 +80,10 @@ ${OBJECTDIR}/algoritmos.o: algoritmos.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/algoritmos.o algoritmos.cpp
 
-${OBJECTDIR}/Grafo.o: Grafo.cpp 
+${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Grafo.o Grafo.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 # Subprojects
 .build-subprojects:
