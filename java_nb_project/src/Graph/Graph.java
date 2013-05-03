@@ -26,9 +26,9 @@ public abstract class Graph {
         a = new Algorithms();
     }
 
-    public int getNodes() throws IllegalAdjMatrix {
+    public int getNodes() throws IllegalAdjMatrixOperation {
         if (!m.validContext) {
-            throw new IllegalAdjMatrix("can not recovery nodes property from a non-initialized graph");
+            throw new IllegalAdjMatrixOperation("can not recovery nodes property from a non-initialized graph");
         }
         return m.nodes;
     }
@@ -38,10 +38,10 @@ public abstract class Graph {
     }
 
     public double at(int _nodeA, int _nodeB)
-            throws IllegalAdjMatrix, IndexOutOfBoundsException, IllegalArgumentException {
+            throws IllegalAdjMatrixOperation, IndexOutOfBoundsException, IllegalArgumentException {
 
         if (!m.validContext) {
-            throw new IllegalAdjMatrix("can not recovery adjacent matrix from a non-initialized graph");
+            throw new IllegalAdjMatrixOperation("can not recovery adjacent matrix from a non-initialized graph");
         }
 
         if (_nodeA < 0 || _nodeB < 0 || _nodeA >= m.nodes || _nodeB >= m.nodes) {
@@ -51,5 +51,28 @@ public abstract class Graph {
         }
 
         return m.m[_nodeA][_nodeB];
+    }
+
+    public double TwiceAround() throws IllegalAdjMatrixOperation {
+        if (!m.validContext) {
+            throw new IllegalAdjMatrixOperation();
+        }
+
+        return a.TwiceAround(m.m, m.nodes);
+    }
+
+    public double TwiceAroundDijkstra() throws IllegalAdjMatrixOperation {
+        if (!m.validContext) {
+            throw new IllegalAdjMatrixOperation();
+        }
+
+        return a.TwiceAroundWDijkstra(m.m, m.nodes);
+    }
+
+    public double EdgeScore() throws IllegalAdjMatrixOperation {
+        if (!m.validContext) {
+            throw new IllegalAdjMatrixOperation();
+        }
+        return a.EdgeScore(m.m, m.nodes);
     }
 }

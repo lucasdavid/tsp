@@ -1,7 +1,8 @@
 package tsp;
 
 import Graph.*;
-import AdjMatrix.IllegalAdjMatrix;
+import AdjMatrix.IllegalAdjMatrixOperation;
+
 /**
  *
  * @author lucasdavid
@@ -16,41 +17,47 @@ public class Tsp extends Graph {
         }
 
         RandomInit(_nodes);
+        m.validContext = true;
     }
 
     public Tsp(String _fileMatrix) {
         //super(_m, _nodes);
     }
 
-    private boolean RandomInit(int _nodes) {
-        
+    private void RandomInit(int _nodes) {
+
         if (m.validContext) {
-            throw new IllegalAdjMatrix();
+            throw new IllegalAdjMatrixOperation();
         }
 
         for (int i = 0; i < m.m.length; i++) {
             for (int j = 0; j < m.m.length; j++) {
-                m.m[i][j] = Math.random() * 100;
+                m.m[i][j] = (int) (Math.random() * 100);
             }
         }
-
-        return false;
     }
 
-    private int[][] ReadFromFile(String _file) {
-        return null;
-    }
-
+//    private int[][] ReadFromFile(String _file) {
+//        return null;
+//    }
     public String report() {
         return new String();
     }
 
     public void print() {
+        System.out.println(m.nodes + " nodes\n---");
+
+        String str = "|\t";
+
         for (int i = 0; i < m.m.length; i++) {
             for (int j = 0; j < m.m.length; j++) {
-                System.out.print(m.m[i][j] + " ");
+                str += m.m[i][j] + "\t";
             }
-            System.out.println();
+
+            System.out.println(str + "|");
+            str = "|\t";
         }
+
+        System.out.println("\n");
     }
 }

@@ -16,7 +16,6 @@ public class AdjMatrix {
 
     public AdjMatrix(int _nodes) {
         setM(new double[_nodes][_nodes], _nodes);
-        
     }
 
     public AdjMatrix(double[][] _m, int _nodes) {
