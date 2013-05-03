@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=TSP
+PROJECTNAME=c_nb_project
 
 # Active Configuration
 DEFAULTCONF=Debug

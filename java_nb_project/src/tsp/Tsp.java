@@ -1,33 +1,39 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package tsp;
 
 import Graph.*;
-
+import AdjMatrix.IllegalAdjMatrix;
 /**
  *
  * @author lucasdavid
  */
 public class Tsp extends Graph {
 
-    public Tsp() {
-        super();
-    }
-    
     public Tsp(int _nodes) {
         super(_nodes);
-    }
-    
-    public Tsp(int[][] _m, int _nodes) {
-        super(_m, _nodes);
+        if (_nodes < 4) {
+            throw new IllegalArgumentException(
+                    "TSP is not applicable for graph instances with " + _nodes + " nodes or below.");
+        }
+
+        RandomInit(_nodes);
     }
 
-    private void toogleValidContext() {
+    public Tsp(String _fileMatrix) {
+        //super(_m, _nodes);
     }
 
     private boolean RandomInit(int _nodes) {
+        
+        if (m.validContext) {
+            throw new IllegalAdjMatrix();
+        }
+
+        for (int i = 0; i < m.m.length; i++) {
+            for (int j = 0; j < m.m.length; j++) {
+                m.m[i][j] = Math.random() * 100;
+            }
+        }
+
         return false;
     }
 
@@ -37,5 +43,14 @@ public class Tsp extends Graph {
 
     public String report() {
         return new String();
+    }
+
+    public void print() {
+        for (int i = 0; i < m.m.length; i++) {
+            for (int j = 0; j < m.m.length; j++) {
+                System.out.print(m.m[i][j] + " ");
+            }
+            System.out.println();
+        }
     }
 }
