@@ -15,7 +15,7 @@ public class Tsp extends Graph {
             throw new IllegalArgumentException(
                     "TSP is not applicable for graph instances with " + _nodes + " nodes or below.");
         }
-
+        
         RandomInit(_nodes);
         m.validContext = true;
     }

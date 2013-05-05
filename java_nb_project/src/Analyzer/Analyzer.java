@@ -13,15 +13,15 @@ enum algorithms {
 
 public class Analyzer {
 
-    private Tsp currentProblem;
     private final int INTERACTIONS = 1;
     private final int MAX_NODES = 15;
     private final int MIN_NODES = 4;
+    private Tsp currentProblem;
     private double[] algorithmsCosts;
     private algorithms[] algorithmsCompared;
+    private TspFileHandler inout;
 
-    public void Run() {
-
+    public void Run() throws Exception {
         // Alter the comparing algorithms here
         algorithmsCompared = new algorithms[]{
             algorithms.TWICEAROUND,
@@ -29,22 +29,28 @@ public class Analyzer {
         };
 
         algorithmsCosts = new double[algorithmsCompared.length];
-        int tNodes;
+        
+        inout.InitReader();
+        inout.InitWritter();
+
         for (int i = 0; i < INTERACTIONS; i++) {
-            tNodes = (int) (Math.random() * 100) % MAX_NODES;
-
-            if (tNodes < MIN_NODES) {
-                tNodes += MIN_NODES;
-                if (tNodes > MAX_NODES) {
-                    tNodes = MAX_NODES;
-                }
-            }
-
-            currentProblem = new Tsp(tNodes);
+            currentProblem = new Tsp(genRandomNodeCount());
             currentProblem.print();
-
             compare();
         }
+    }
+
+    private int genRandomNodeCount() {
+
+        int tNodes = (int) (Math.random() * 100) % MAX_NODES;
+        if (tNodes < MIN_NODES) {
+            tNodes += MIN_NODES;
+            if (tNodes > MAX_NODES) {
+                tNodes = MAX_NODES;
+            }
+        }
+
+        return tNodes;
     }
 
     private void compare() {
@@ -66,10 +72,5 @@ public class Analyzer {
                 ret = i;
             }
         }
-    }
-
-    private double report(algorithms _currentAlgorithm) {
-        double ret = -1;
-        return ret;
     }
 }
