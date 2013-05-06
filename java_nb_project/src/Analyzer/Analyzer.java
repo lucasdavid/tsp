@@ -30,9 +30,20 @@ public class Analyzer {
 
         algorithmsCosts = new double[algorithmsCompared.length];
         
+        FileGraphComparation();
+    }
+    
+    private void FileGraphComparation() throws Exception {
+        inout = new TspFileHandler("berlin52.tsp");
         inout.InitReader();
         inout.InitWritter();
-
+        
+        double m[][] = inout.Read();
+        currentProblem = new Tsp(m, m.length);
+        compare();
+    }
+    
+    private void RandomComparation() throws Exception {
         for (int i = 0; i < INTERACTIONS; i++) {
             currentProblem = new Tsp(genRandomNodeCount());
             currentProblem.print();

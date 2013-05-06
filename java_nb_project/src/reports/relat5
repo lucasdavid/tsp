@@ -1,0 +1,12 @@
+NAME: ch130
+TYPE: TSP
+COMMENT: 130 city problem (Churritz)
+DIMENSION: 130
+EDGE_WEIGHT_TYPE: EUC_2D
+NODE_COORD_SECTION
+
+Twice-around original: 8130
+Twice-around Dijkstra: 32306
+Ocorr Shortest - path: 16429
+
+RUN FINISHED; exit value 0; real time: 100ms; user: 10ms; system: 80

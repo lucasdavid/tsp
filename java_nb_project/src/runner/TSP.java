@@ -12,8 +12,14 @@ public class TSP {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-
-        Analyzer a = new Analyzer();
-        a.Run();
+        try {
+            Analyzer a = new Analyzer();
+            a.Run();
+        } catch (Exception e) {
+            System.err.println(
+                    "Class: " + e.getClass()
+                    + "\nCause: " + e.getCause()
+                    + "\nMessage: " + e.getMessage());
+        }
     }
 }

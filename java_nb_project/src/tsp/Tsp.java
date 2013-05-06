@@ -20,8 +20,8 @@ public class Tsp extends Graph {
         m.validContext = true;
     }
 
-    public Tsp(String _fileMatrix) {
-        //super(_m, _nodes);
+    public Tsp(double[][] _m, int _nodes) {
+        super(_m, _nodes);
     }
 
     private void RandomInit(int _nodes) {

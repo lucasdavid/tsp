@@ -1,9 +1,9 @@
 package tsp;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 import java.util.Date;
@@ -28,8 +28,8 @@ public class TspFileHandler {
     public TspFileHandler(String _problem) {
         br = null;
         pw = null;
-        tspFileName = "problems/" + _problem;
-        reportFileName = "reports/report" + (new Date()).toString();
+        tspFileName = "src/problems/" + _problem;
+        reportFileName = "src/reports/report " + (new Date()).toString();
     }
 
     public TspFileHandler(String _problem, String _report) {
@@ -48,7 +48,7 @@ public class TspFileHandler {
             throw new Exception("duplicated reader");
         }
 
-        br = new BufferedReader(new InputStreamReader(TspFileHandler.class.getResourceAsStream(tspFileName)));
+        br = new BufferedReader(new FileReader("src/problems/berlin52.tsp"));
     }
 
     public void InitWritter() throws Exception {
@@ -59,9 +59,19 @@ public class TspFileHandler {
         }
     }
 
-    public int[][] Read() {
-        // TODO conversion code
-        return null;
+    public double[][] Read() throws IOException {
+        String sCurrentLine;
+        double graph[][];
+        double nodes[];
+
+        graph = null;
+        nodes = null;
+
+        while ((sCurrentLine = br.readLine()) != null) {
+            System.out.println(sCurrentLine);
+        }
+
+        return graph;
     }
 
     public void Append(String _line) {
