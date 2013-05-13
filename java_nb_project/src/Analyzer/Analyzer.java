@@ -16,6 +16,7 @@ public class Analyzer {
     private final int INTERACTIONS = 1;
     private final int MAX_NODES = 15;
     private final int MIN_NODES = 4;
+    private final String GRAPH_FILE = "bayg29.tsp";
     private Tsp currentProblem;
     private double[] algorithmsCosts;
     private algorithms[] algorithmsCompared;
@@ -31,15 +32,17 @@ public class Analyzer {
         algorithmsCosts = new double[algorithmsCompared.length];
         
         FileGraphComparation();
+        //RandomComparation();
     }
     
     private void FileGraphComparation() throws Exception {
-        inout = new TspFileHandler("berlin52.tsp");
+        inout = new TspFileHandler(GRAPH_FILE);
         inout.InitReader();
-        inout.InitWritter();
+        //inout.InitWriter();
         
         double m[][] = inout.Read();
         currentProblem = new Tsp(m, m.length);
+        currentProblem.print();
         compare();
     }
     
