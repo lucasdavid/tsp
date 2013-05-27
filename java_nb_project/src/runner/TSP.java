@@ -16,10 +16,7 @@ public class TSP {
             Analyzer a = new Analyzer();
             a.Run();
         } catch (Exception e) {
-            System.err.println(
-                    "Class: " + e.getClass()
-                    + "\nCause: " + e.getCause()
-                    + "\nMessage: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

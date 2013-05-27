@@ -58,7 +58,7 @@ public abstract class Graph {
             throw new IllegalAdjMatrixOperation();
         }
 
-        return a.TwiceAround(m.m, m.nodes);
+        return a.TwiceAround(m.m);
     }
 
     public double TwiceAroundDijkstra() throws IllegalAdjMatrixOperation {
@@ -66,13 +66,13 @@ public abstract class Graph {
             throw new IllegalAdjMatrixOperation();
         }
 
-        return a.TwiceAroundWDijkstra(m.m, m.nodes);
+        return a.TwiceAroundWDijkstra(m.m);
     }
 
     public double EdgeScore() throws IllegalAdjMatrixOperation {
         if (!m.validContext) {
             throw new IllegalAdjMatrixOperation();
         }
-        return a.EdgeScore(m.m, m.nodes);
+        return a.EdgeScore(m.m);
     }
 }

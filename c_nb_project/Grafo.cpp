@@ -125,7 +125,7 @@ bool Grafo::gerarMatRand(int _numVert) {
                 matrizAdj[i][j] = matrizAdj[j][i] = MIN_AREST;
         }
     }
-
+    
     numVert = _numVert;
     return valido = true;
 }
