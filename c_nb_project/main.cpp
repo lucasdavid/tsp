@@ -50,11 +50,11 @@ int main(int argc, char** argv) {
     t.cmpTwiAroundEOcorrSPT(1000, 100);
     */
     
-    Tsp tsp("src/problemas/bayg29");
-    cout << "\nTwice-around original: " << tsp.resTwiAroundOrig() << endl
-         << "Twice-around Dijkstra: " << tsp.resTwiAroundDijk() << endl
-         << "Ocorr Shortest - path simplificado: " << tsp.resOcorrEmSPTSimplificado() << endl
-         << "Ocorr Shortest - path: " << tsp.resOcorrEmSPT() << endl;
+    Tsp tsp("src/problemas/bayg29");    
+    cout //<< "\nTwice-around original: " << tsp.resTwiAroundOrig() << endl
+         //<< "Twice-around Dijkstra: " << tsp.resTwiAroundDijk() << endl;
+         << "Ocorr Shortest - path simplificado: " << tsp.resOcorrEmSPTSimplificado() << endl;
+         //<< "Ocorr Shortest - path: " << tsp.resOcorrEmSPT() << endl;
     
     return 0;
 }

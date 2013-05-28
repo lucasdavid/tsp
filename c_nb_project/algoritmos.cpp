@@ -63,7 +63,7 @@ int **Grafo::prim() {
 
     for (i = 1; i < numVert; i++)
         mst[ i ][ parent[i] ] = mst[ parent[i] ][ i ] = matrizAdj[ i ][ parent[i] ];
-        
+
     delete [] frj;
     delete [] cost;
     delete [] parent;
@@ -130,11 +130,15 @@ int **Grafo::dijkstra(const int _vertInicial, int **_acm) {
     for (w = 0; w < numVert; w++)
         if (parent[w] != -1 && cost[w] != 0)
             acm[ w ][ parent[w] ] = acm[ parent[w] ][ w ] = matrizAdj[ w ][ parent[w] ];
-    
+
+    for (w = 0; w < numVert; w++)
+        cout << " " << parent[w];
+    cout << endl;
+
     delete [] frj;
     delete [] cost;
     delete [] parent;
-    
+
     return acm;
 }
 

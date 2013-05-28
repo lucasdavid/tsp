@@ -49,6 +49,7 @@ public class Algorithms {
     }
 
     public int[] Dijkstra(double[][] _m, int _root) {
+        
         double mincost, cost[] = new double[_m.length];
         int frj[], parent[], w0;
 
@@ -63,7 +64,7 @@ public class Algorithms {
 
         parent[_root] = _root;
         cost[_root] = 0;
-        w0 = -1;
+        w0 = 0;
 
         while (true) {
             mincost = -1;
@@ -188,7 +189,7 @@ public class Algorithms {
         int vAtual = 0;
         int vAlcancado;
         int cost = 0;
-        
+
         for (int i = 0; i < _m.length; i++) {
             for (int j = 0; j < _m.length; j++) {
                 visitedEdges[i][j] = 0;

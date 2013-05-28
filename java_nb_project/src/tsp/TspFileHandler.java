@@ -41,11 +41,11 @@ public class TspFileHandler {
         reportFileName = "src/reports/" + _report;
     }
 
-    public void InitReader() throws Exception {
-        InitReader(tspFileName);
+    public void initReader() throws Exception {
+        initReader(tspFileName);
     }
 
-    public void InitReader(String _fileName) throws Exception {
+    public void initReader(String _fileName) throws Exception {
         if (br != null) {
             throw new Exception("duplicated reader");
         }
@@ -53,15 +53,15 @@ public class TspFileHandler {
         br = new BufferedReader(new FileReader(tspFileName));
     }
 
-    public void InitWriter() throws Exception {
+    public void initWriter() throws Exception {
         if (pw != null) {
             throw new Exception("duplicated writter");
         }
-        
+
         pw = new PrintWriter(new FileWriter(reportFileName));
     }
 
-    public double[][] Read() throws Exception {
+    public double[][] read() throws Exception {
         String sCurrentLine, token;
         double graph[][], nodes[][];
         int dimension;
@@ -69,7 +69,6 @@ public class TspFileHandler {
         int i, j;
 
         graph = null;
-        nodes = null;
         dimension = 0;
 
         // Decoding file header
@@ -84,7 +83,8 @@ public class TspFileHandler {
                 graph = new double[dimension][dimension];
 
             } else if (sCurrentLine.equals("NODE_COORD_SECTION")
-                    || sCurrentLine.equals("EDGE_WEIGHT_SECTION")) {
+                    || sCurrentLine.equals("EDGE_WEIGHT_SECTION")
+                    || sCurrentLine.equals("DISPLAY_DATA_SECTION")) {
                 break; // end of file header
             }
         }
@@ -95,7 +95,7 @@ public class TspFileHandler {
 
         // Reading edge values under "EDGE_WEIGHT_SECTION" standard
         if (sCurrentLine.equals("EDGE_WEIGHT_SECTION")) {
-
+            
             for (i = 0; i < graph.length; i++) {
                 sCurrentLine = br.readLine();
                 StringTokenizer st = new StringTokenizer(sCurrentLine, " ");
@@ -108,7 +108,6 @@ public class TspFileHandler {
         } else {
             // sCurrentLine == NODE_COORD_SECTION
             // Calculate Pitagoras' distance between each node.
-
             i = 0;
             nodes = new double[dimension][2];
 
@@ -129,21 +128,27 @@ public class TspFileHandler {
                 }
             }
         }
-        
+
+        closeReader();
         return graph;
     }
 
-    public void Append(String _line) {
-        pw.println(_line);
-        pw.flush();
+    public void append(String _line) {
+        if (pw != null) {
+            pw.println(_line);
+            pw.flush();
+        }
     }
 
-    public void CloseReader() throws IOException {
+    public void closeReader() throws IOException {
         br.close();
         br = null;
     }
 
-    public void CloseWritter() {
-        pw.close();
+    public void closeWriter() {
+        if (pw != null) {
+            pw.close();
+            pw = null;
+        }
     }
 }

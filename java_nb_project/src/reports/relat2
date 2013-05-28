@@ -1,7 +1,0 @@
-Número de comparações realizadas: 100000.
-Intervalo de vértices que um grafo pode assumir: [1, 10]
-
-N. de vezes que o alg orig foi melhor: 4834
-N. de vezes que o shortest-path foi melhor: 51785
-
-RUN FINISHED; exit value 0; real time: 1s; user: 60ms; system: 1s
