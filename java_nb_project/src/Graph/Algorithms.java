@@ -49,7 +49,7 @@ public class Algorithms {
     }
 
     public int[] Dijkstra(double[][] _m, int _root) {
-        
+
         double mincost, cost[] = new double[_m.length];
         int frj[], parent[], w0;
 
@@ -105,23 +105,52 @@ public class Algorithms {
         return nodeList;
     }
 
-    private int innerDFS(int[] _mst, int[] _nodeLst, int _i, int _currentNode) {
-        _nodeLst[_i++] = _currentNode;
+    private int innerDFS(int[] _mst, int[] _nodeLst, int _i, int _current) {
+        _nodeLst[_i++] = _current;
 
         for (int i = 0; i < _mst.length; i++) {
-            if (i != _currentNode && _mst[i] == _currentNode) {
+            if (i != _current && _mst[i] == _current) {
                 _i = innerDFS(_mst, _nodeLst, _i, i);
-                _nodeLst[_i++] = _currentNode;
+                _nodeLst[_i++] = _current;
             }
         }
 
         return _i; // return current valid position
     }
 
+    public double NearestNeighbor(double[][] _m) {
+        double cost = 0;
+        int current;
+
+        int nodes[] = new int[_m.length];
+        int nodesLength = _m.length - 1;
+
+        for (int i = 0; i < nodes.length - 1; i++) {
+            nodes[i] = i + 1;
+        }
+        current = nodes[nodes.length - 1] = 0;
+
+        while (nodesLength > 0) {
+            int nearest = nodes[0];
+            for (int i = 1; i < nodesLength; i++) {
+                if (_m[current][nearest] > _m[current][nodes[i]]) {
+                    nearest = nodes[i];
+                }
+            }
+            
+            cost += _m[current][nearest];
+            nodes[0] = nodes[--nodesLength];
+            current = nearest;
+        }
+
+        cost += _m[current][0];
+        return cost;
+    }
+
     public double TwiceAround(double[][] _m) {
 
         int _mst[] = Prim(_m);
-        int lstVert[] = DFS(_mst, 0);
+        int visitedNodes[] = DFS(_mst, 0);
         int lstLim = 2 * _m.length - 1;
 
         int i = 0;
@@ -129,11 +158,11 @@ public class Algorithms {
             int j = i + 1;
 
             while (j < lstLim - 1) {
-                if (lstVert[j] != lstVert[i]) {
+                if (visitedNodes[j] != visitedNodes[i]) {
                     j++;
                 } else {
                     for (int k = j; k < lstLim - 1; k++) {
-                        lstVert[k] = lstVert[k + 1];
+                        visitedNodes[k] = visitedNodes[k + 1];
                     }
                     lstLim--;
                 }
@@ -143,31 +172,30 @@ public class Algorithms {
 
         double cost = 0;
         for (i = 1; i < lstLim; i++) {
-            cost += _m[ lstVert[i - 1]][ lstVert[i]];
+            cost += _m[ visitedNodes[i - 1]][ visitedNodes[i]];
         }
 
         return cost;
     }
 
     public double TwiceAroundWDijkstra(double[][] _m) {
-        int _mst[], lstVert[], // lista de vertices visitados pelo DFS
-                lstLim = 2 * _m.length - 1, // seq. de vertices do CHM
-                cost = 0,
-                i, j;
 
-        _mst = Dijkstra(_m, 0);
-        lstVert = DFS(_mst, 0);
+        int _mst[] = Dijkstra(_m, 0);
+        int visitedNodes[] = DFS(_mst, 0);
+        int lstLim = 2 * _m.length - 1;
 
-        i = 0;
-        while (i < lstLim - 1) {
-            j = i + 1;
+        double cost = 0;
+
+        int i = 0;
+        while (i < visitedNodes.length - 1) {
+            int j = i + 1;
 
             while (j < lstLim - 1) {
-                if (lstVert[j] != lstVert[i]) {
+                if (visitedNodes[j] != visitedNodes[i]) {
                     j++;
                 } else {
                     for (int k = j; k < lstLim - 1; k++) {
-                        lstVert[k] = lstVert[k + 1];
+                        visitedNodes[k] = visitedNodes[k + 1];
                     }
                     lstLim--;
                 }
@@ -176,63 +204,64 @@ public class Algorithms {
         }
 
         for (i = 1; i < lstLim; i++) {
-            cost += _m[ lstVert[i - 1]][ lstVert[i]];
+            cost += _m[visitedNodes[i - 1]][visitedNodes[i]];
         }
 
         return cost;
     }
 
     public double EdgeScore(double[][] _m) {
-        int visitedEdges[][] = new int[_m.length][_m.length];
-        boolean lstVertInseridos[] = new boolean[_m.length];
-        int numVertInseridos = 1;
-        int vAtual = 0;
-        int vAlcancado;
-        int cost = 0;
+        int edgeScore[][] = new int[_m.length][_m.length];
+        boolean reacheds[] = new boolean[_m.length];
+        int insertedNodes = 1;
+        int current = 0;
 
         for (int i = 0; i < _m.length; i++) {
             for (int j = 0; j < _m.length; j++) {
-                visitedEdges[i][j] = 0;
+                edgeScore[i][j] = 0;
             }
         }
 
         for (int k = 0; k < _m.length; k++) {
             int spt[] = Dijkstra(_m, k);
 
-            for (int i = 0; i < _m.length; i++) {
-                visitedEdges[i][ spt[i]]++;
+            for (int i = 0; i < k; i++) {
+                edgeScore[i][spt[i]]++;
+            }
+            for (int i = k + 1; i < _m.length; i++) {
+                edgeScore[i][spt[i]]++;
             }
         }
 
         for (int i = 1; i < _m.length; i++) {
-            lstVertInseridos[i] = false;
+            reacheds[i] = false;
         }
-        lstVertInseridos[vAtual] = true;
+        reacheds[current] = true;
 
-        while (numVertInseridos < _m.length) {
-            vAlcancado = vAtual;
+        int reached;
+        double cost = 0;
+        while (insertedNodes < _m.length) {
+            reached = current;
 
             for (int i = 0; i < _m.length; i++) {
-                if (lstVertInseridos[i]) {
-                    continue; // O vertice I ja esta no circuito.
+                if (reacheds[i] == true) {
+                    continue;
                 }
-                // O caminho vAtual-i esta em mais ACMs que vAtual-vAlcancado
-                if (visitedEdges[vAtual][i] > visitedEdges[vAtual][vAlcancado]) {
-                    vAlcancado = i;
-                } // Ambos estao no mesmo numero de ACMs. Escolhe a de menor cost.
-                else if (visitedEdges[vAtual][i] == visitedEdges[vAtual][vAlcancado]
-                        && _m[vAtual][i] <= _m[vAtual][vAlcancado]) {
-                    vAlcancado = i;
+                if (edgeScore[current][i] > edgeScore[current][reached]) {
+                    reached = i;
+                } else if (edgeScore[current][i] == edgeScore[current][reached]
+                        && _m[current][i] <= _m[current][reached]) {
+                    reached = i;
                 }
             }
 
-            numVertInseridos++;
-            lstVertInseridos[vAlcancado] = true;
-            cost += _m[vAtual][vAlcancado];
-            vAtual = vAlcancado;
+            insertedNodes++;
+            reacheds[reached] = true;
+            cost += _m[current][reached];
+            current = reached;
         }
 
-        cost += _m[vAtual][0];
+        cost += _m[current][0];
         return cost;
     }
 }

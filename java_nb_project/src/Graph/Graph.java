@@ -53,6 +53,14 @@ public abstract class Graph {
         return m.m[_nodeA][_nodeB];
     }
 
+    public double NearestNeighbor() throws IllegalAdjMatrixOperation {
+        if (!m.validContext) {
+            throw new IllegalAdjMatrixOperation();
+        }
+
+        return a.NearestNeighbor(m.m);
+    }
+    
     public double TwiceAround() throws IllegalAdjMatrixOperation {
         if (!m.validContext) {
             throw new IllegalAdjMatrixOperation();

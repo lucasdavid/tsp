@@ -9,37 +9,42 @@ import tsp.*;
 public class Analyzer {
 
     private final int INTERACTIONS = 1;
-    private final int MAX_NODES = 10;
+    private final int MAX_NODES = 4;
     private final int MIN_NODES = 4;
     private final int MAX_EDGE_VALUE = 10;
     private final int MIN_EDGE_VALUE = 1;
     private final String GRAPH_FILE = "bayg29.tsp";
-    private final boolean PRINT_PROBLEMS = false;
+    private final boolean PRINT_PROBLEMS = true;
     private final boolean GENERATE_REPORT = false;
 
     private enum algorithms {
 
-        TWICEAROUND, TWICEAROUNDDIJK, EDGESCORE
+        NEARESTNEIGHBOR, TWICEAROUND, TWICEAROUNDDIJK, EDGESCORE
     }
     private Tsp currentProblem;
     private double[] algorithmsCosts;
     private algorithms[] algorithmsCompared;
     private TspFileHandler inout;
 
-    public void Run() throws Exception {
+    public void run() {
         inout = new TspFileHandler(GRAPH_FILE);
 
         // Alter the comparing algorithms here
         algorithmsCompared = new algorithms[]{
-            //algorithms.TWICEAROUND,
-            //algorithms.TWICEAROUNDDIJK, 
+            algorithms.NEARESTNEIGHBOR,
+            algorithms.TWICEAROUND,
+            algorithms.TWICEAROUNDDIJK,
             algorithms.EDGESCORE
         };
 
         algorithmsCosts = new double[algorithmsCompared.length];
 
-        fileGraphComparation();
-        //randomComparation();
+        //fileGraphComparation();
+        try {
+        randomComparation();
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void fileGraphComparation() throws Exception {
@@ -85,7 +90,10 @@ public class Analyzer {
         for (int i = 0; i < algorithmsCompared.length; i++) {
             inout.append(algorithmsCompared[i].toString());
 
-            if (algorithmsCompared[i] == algorithms.TWICEAROUND) {
+            if (algorithmsCompared[i] == algorithms.NEARESTNEIGHBOR) {
+                algorithmsCosts[i] = currentProblem.NearestNeighbor();
+
+            } else if (algorithmsCompared[i] == algorithms.TWICEAROUND) {
                 algorithmsCosts[i] = currentProblem.TwiceAround();
 
             } else if (algorithmsCompared[i] == algorithms.TWICEAROUNDDIJK) {
@@ -96,11 +104,12 @@ public class Analyzer {
             }
         }
 
+        System.out.println();
         inout.append("\nAlgorithms result\n==================");
 
         int ret = 0;
         for (int i = 0; i < algorithmsCompared.length; i++) {
-            System.out.println("\n" + algorithmsCompared[i] + ": " + algorithmsCosts[i]);
+            System.out.println(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
             inout.append(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
 
             if (algorithmsCosts[i] < algorithmsCosts[ret]) {
@@ -108,7 +117,7 @@ public class Analyzer {
             }
         }
 
-        System.out.println("\nBest result: " + algorithmsCompared[ret]);
+        System.out.println("\nBest result: " + algorithmsCompared[ret] + "\n");
         inout.append("\nBest result\n==================");
         inout.append(algorithmsCompared[ret].toString());
 
