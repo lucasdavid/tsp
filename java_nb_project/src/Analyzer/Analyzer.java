@@ -8,14 +8,14 @@ import tsp.*;
  */
 public class Analyzer {
 
-    private final int INTERACTIONS = 1;
-    private final int MAX_NODES = 4;
+    private final int INTERACTIONS = 100;
+    private final int MAX_NODES = 100;
     private final int MIN_NODES = 4;
-    private final int MAX_EDGE_VALUE = 10;
+    private final int MAX_EDGE_VALUE = 100;
     private final int MIN_EDGE_VALUE = 1;
     private final String GRAPH_FILE = "bayg29.tsp";
-    private final boolean PRINT_PROBLEMS = true;
-    private final boolean GENERATE_REPORT = false;
+    private final boolean PRINT_PROBLEMS = false;
+    private final boolean GENERATE_REPORT = true;
 
     private enum algorithms {
 
@@ -39,9 +39,10 @@ public class Analyzer {
 
         algorithmsCosts = new double[algorithmsCompared.length];
 
-        //fileGraphComparation();
+        
         try {
-        randomComparation();
+            fileGraphComparation();
+            //randomComparation();
         } catch(Exception e) {
             e.printStackTrace();
         }

@@ -3,9 +3,19 @@ package Graph;
 /**
  *
  * @author lucasdavid
+ * 
+ * Describes algorithms that can be used
+ * over TSP instances.
+ * 
  */
 public class Algorithms {
 
+    /** 
+     * @param _m: adjacent matrix of current graph
+     * 
+     * @return parent[]: a list of nodes parents which represents 
+     *  the minimal spanning tree
+     */
     public int[] Prim(double[][] _m) {
         int parent[], frj[];
         double cost[], mincost;
@@ -48,6 +58,13 @@ public class Algorithms {
         return parent;
     }
 
+    /**
+     * @param _m adjacent matrix of current graph
+     * @param _root initial node in graph _m
+     * 
+     * @return parent[] list of nodes parents which represents
+     *  the shortest path tree
+     */
     public int[] Dijkstra(double[][] _m, int _root) {
 
         double mincost, cost[] = new double[_m.length];
@@ -95,22 +112,35 @@ public class Algorithms {
         return parent;
     }
 
+    /**
+     * @param _mst minimal spanning tree
+     * @param _root initial node in _mst tree
+     * 
+     * @return nodeList[] list of visiting sequence 
+     *  over _mst tree, starting from node _root
+     */
     public int[] DFS(int[] _mst, int _root) {
         int nodeList[], lstLim;
         lstLim = 0;
 
         nodeList = new int[2 * _mst.length - 1];
 
-        innerDFS(_mst, nodeList, lstLim, _root);
+        innerDFS(_mst, _root, nodeList, lstLim);
         return nodeList;
     }
 
-    private int innerDFS(int[] _mst, int[] _nodeLst, int _i, int _current) {
+    /**
+     * @param _mst
+     * @param _current
+     * @param _nodeList
+     * @param _i
+     */
+    private int innerDFS(int[] _mst, int _current, int[] _nodeLst, int _i) {
         _nodeLst[_i++] = _current;
 
         for (int i = 0; i < _mst.length; i++) {
             if (i != _current && _mst[i] == _current) {
-                _i = innerDFS(_mst, _nodeLst, _i, i);
+                _i = innerDFS(_mst, i, _nodeLst, _i);
                 _nodeLst[_i++] = _current;
             }
         }
@@ -118,6 +148,9 @@ public class Algorithms {
         return _i; // return current valid position
     }
 
+    /**
+     * @param _m
+     */
     public double NearestNeighbor(double[][] _m) {
         double cost = 0;
         int current;
@@ -131,15 +164,17 @@ public class Algorithms {
         current = nodes[nodes.length - 1] = 0;
 
         while (nodesLength > 0) {
+            int j = 0;
             int nearest = nodes[0];
             for (int i = 1; i < nodesLength; i++) {
                 if (_m[current][nearest] > _m[current][nodes[i]]) {
                     nearest = nodes[i];
+                    j = i;
                 }
             }
             
             cost += _m[current][nearest];
-            nodes[0] = nodes[--nodesLength];
+            nodes[j] = nodes[--nodesLength];
             current = nearest;
         }
 
@@ -224,24 +259,24 @@ public class Algorithms {
 
         for (int k = 0; k < _m.length; k++) {
             int spt[] = Dijkstra(_m, k);
-
+            
             for (int i = 0; i < k; i++) {
                 edgeScore[i][spt[i]]++;
             }
+            // ignores node k
             for (int i = k + 1; i < _m.length; i++) {
                 edgeScore[i][spt[i]]++;
             }
         }
 
-        for (int i = 1; i < _m.length; i++) {
+        for (int i = 0; i < _m.length; i++) {
             reacheds[i] = false;
         }
-        reacheds[current] = true;
 
         int reached;
         double cost = 0;
         while (insertedNodes < _m.length) {
-            reached = current;
+            reacheds[reached = current] = true;
 
             for (int i = 0; i < _m.length; i++) {
                 if (reacheds[i] == true) {

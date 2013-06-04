@@ -282,7 +282,7 @@ void Tsp::cmpTwiAroundEOcorrSPT(const int _numInter, const int _intervTamMat, co
             if (_exibirMat) g.exibirMat();
 
             tCustTwiAround = resTwiAroundOrig(); // calc. com o custo pelo twice-around original
-            tCustOcorrSPT = resOcorrEmSPT(); // calc. com o custo pelo metodo de ocorrencia em shortest-path trees
+            tCustOcorrSPT = resOcorrEmSPTSimplificado(); // calc. com o custo pelo metodo de ocorrencia em shortest-path trees
             
             if (_exibirCustos)
                 cout << "Custo (tw-ar original): " << tCustTwiAround << ".\n"

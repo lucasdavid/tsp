@@ -131,10 +131,6 @@ int **Grafo::dijkstra(const int _vertInicial, int **_acm) {
         if (parent[w] != -1 && cost[w] != 0)
             acm[ w ][ parent[w] ] = acm[ parent[w] ][ w ] = matrizAdj[ w ][ parent[w] ];
 
-    for (w = 0; w < numVert; w++)
-        cout << " " << parent[w];
-    cout << endl;
-
     delete [] frj;
     delete [] cost;
     delete [] parent;
