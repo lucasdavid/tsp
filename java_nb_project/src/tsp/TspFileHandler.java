@@ -11,7 +11,11 @@ import java.util.Date;
 import javax.imageio.IIOException;
 
 /**
+ * class TspFileHandler
  *
+ * Reads TSP instances from files and decode it into graph notation.
+ * Writes reports after a algorithm's execution.
+ * 
  * @author david
  */
 public class TspFileHandler {
@@ -28,29 +32,37 @@ public class TspFileHandler {
     }
 
     public TspFileHandler(String _problem) {
-        br = null;
-        pw = null;
+        TspFileHandler();
         tspFileName = "src/problems/" + _problem;
-        reportFileName = "src/reports/report " + (new Date()).toString();
     }
 
     public TspFileHandler(String _problem, String _report) {
-        br = null;
-        pw = null;
-        tspFileName = "src/problems/" + _problem;
+        TspFileHandler(_problem);
         reportFileName = "src/reports/" + _report;
     }
 
-    public void initReader() throws Exception {
-        initReader(tspFileName);
-    }
-
-    public void initReader(String _fileName) throws Exception {
+    public void reset() throws IOException {
         if (br != null) {
-            throw new Exception("duplicated reader");
+                br.close();
+                br = null;
+        }
+        if (pw != null) {
+                pw.close();
+                br = null;
         }
 
-        br = new BufferedReader(new FileReader(tspFileName));
+        tspFileName = "";
+        reportFileName = "src/reports/report" + (new Date()).toString();
+    }
+
+    public void reset(_problem) throws IOException {
+        reset();
+        tspFileName = _problem;
+    }
+
+    public void reset(_problem, _report) throws IOException {
+        reset(_problem);
+        reportFileName = _report;
     }
 
     public void initWriter() throws Exception {
@@ -62,6 +74,8 @@ public class TspFileHandler {
     }
 
     public double[][] read() throws Exception {
+        br = new BufferedReader(new FileReader(tspFileName));
+
         String sCurrentLine, token;
         double graph[][], nodes[][];
         int dimension;
@@ -129,7 +143,9 @@ public class TspFileHandler {
             }
         }
 
-        closeReader();
+        pw.close();
+        pw = null;
+
         return graph;
     }
 
@@ -140,15 +156,7 @@ public class TspFileHandler {
         }
     }
 
-    public void closeReader() throws IOException {
-        br.close();
-        br = null;
-    }
-
     public void closeWriter() {
-        if (pw != null) {
-            pw.close();
-            pw = null;
-        }
+        
     }
 }
