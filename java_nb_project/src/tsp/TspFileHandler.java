@@ -32,12 +32,12 @@ public class TspFileHandler {
     }
 
     public TspFileHandler(String _problem) {
-        TspFileHandler();
+        this();
         tspFileName = "src/problems/" + _problem;
     }
 
     public TspFileHandler(String _problem, String _report) {
-        TspFileHandler(_problem);
+        this(_problem);
         reportFileName = "src/reports/" + _report;
     }
 
@@ -55,22 +55,14 @@ public class TspFileHandler {
         reportFileName = "src/reports/report" + (new Date()).toString();
     }
 
-    public void reset(_problem) throws IOException {
+    public void reset(String _problem) throws IOException {
         reset();
         tspFileName = _problem;
     }
 
-    public void reset(_problem, _report) throws IOException {
+    public void reset(String _problem, String _report) throws IOException {
         reset(_problem);
         reportFileName = _report;
-    }
-
-    public void initWriter() throws Exception {
-        if (pw != null) {
-            throw new Exception("duplicated writter");
-        }
-
-        pw = new PrintWriter(new FileWriter(reportFileName));
     }
 
     public double[][] read() throws Exception {
@@ -143,20 +135,23 @@ public class TspFileHandler {
             }
         }
 
-        pw.close();
-        pw = null;
+        br.close();
+        br = null;
 
         return graph;
     }
 
-    public void append(String _line) {
-        if (pw != null) {
-            pw.println(_line);
-            pw.flush();
+    public void append(String _line) throws IOException {
+        if (pw == null) {
+            pw = new PrintWriter(new FileWriter(reportFileName));
         }
+        
+        pw.println(_line);
+        pw.flush();
     }
 
-    public void closeWriter() {
-        
+    public void commit() {
+        pw.close();
+        pw = null;
     }
 }

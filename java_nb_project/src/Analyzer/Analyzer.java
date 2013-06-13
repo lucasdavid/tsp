@@ -8,12 +8,21 @@ import tsp.*;
  */
 public class Analyzer {
 
+    /*
+     * Constants related to random comparing
+     */
     private final int INTERACTIONS = 100;
     private final int MAX_NODES = 100;
     private final int MIN_NODES = 4;
     private final int MAX_EDGE_VALUE = 100;
     private final int MIN_EDGE_VALUE = 1;
+    /*
+     * Constants related to real instance TSP
+     */
     private final String GRAPH_FILE = "bayg29.tsp";
+    /*
+     * Constants related to compare() method
+     */
     private final boolean PRINT_PROBLEMS = false;
     private final boolean GENERATE_REPORT = true;
 
@@ -39,21 +48,15 @@ public class Analyzer {
 
         algorithmsCosts = new double[algorithmsCompared.length];
 
-        
         try {
             fileGraphComparation();
             //randomComparation();
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void fileGraphComparation() throws Exception {
-        inout.initReader();
-        if (GENERATE_REPORT) {
-            inout.initWriter();
-        }
-
         double m[][] = inout.read();
         currentProblem = new Tsp(m, m.length);
         if (PRINT_PROBLEMS) {
@@ -64,7 +67,15 @@ public class Analyzer {
 
     private void randomComparation() throws Exception {
         for (int i = 0; i < INTERACTIONS; i++) {
-            currentProblem = new Tsp(genRandomNodeCount(), MAX_EDGE_VALUE, MIN_EDGE_VALUE);
+            int tNodes = (int) (Math.random() * 100) % MAX_NODES;
+            if (tNodes < MIN_NODES) {
+                tNodes += MIN_NODES;
+                if (tNodes > MAX_NODES) {
+                    tNodes = MAX_NODES;
+                }
+            }
+
+            currentProblem = new Tsp(tNodes, MAX_EDGE_VALUE, MIN_EDGE_VALUE);
             if (PRINT_PROBLEMS) {
                 currentProblem.print();
             }
@@ -72,21 +83,12 @@ public class Analyzer {
         }
     }
 
-    private int genRandomNodeCount() {
-        int tNodes = (int) (Math.random() * 100) % MAX_NODES;
-        if (tNodes < MIN_NODES) {
-            tNodes += MIN_NODES;
-            if (tNodes > MAX_NODES) {
-                tNodes = MAX_NODES;
-            }
+    private void compare() throws Exception {
+
+        if (GENERATE_REPORT) {
+            inout.append("**Analyses report**\n");
+            inout.append("Algorithms compared\n==================");
         }
-
-        return tNodes;
-    }
-
-    private void compare() {
-        inout.append("**Analyses report**\n");
-        inout.append("Algorithms compared\n==================");
 
         for (int i = 0; i < algorithmsCompared.length; i++) {
             inout.append(algorithmsCompared[i].toString());
@@ -106,12 +108,18 @@ public class Analyzer {
         }
 
         System.out.println();
-        inout.append("\nAlgorithms result\n==================");
+
+        if (GENERATE_REPORT) {
+            inout.append("\nAlgorithms result\n==================");
+        }
 
         int ret = 0;
         for (int i = 0; i < algorithmsCompared.length; i++) {
             System.out.println(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
-            inout.append(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
+
+            if (GENERATE_REPORT) {
+                inout.append(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
+            }
 
             if (algorithmsCosts[i] < algorithmsCosts[ret]) {
                 ret = i;
@@ -119,9 +127,12 @@ public class Analyzer {
         }
 
         System.out.println("\nBest result: " + algorithmsCompared[ret] + "\n");
-        inout.append("\nBest result\n==================");
-        inout.append(algorithmsCompared[ret].toString());
 
-        inout.closeWriter();
+        if (GENERATE_REPORT) {
+            inout.append("\nBest result\n==================");
+            inout.append(algorithmsCompared[ret].toString());
+
+            inout.commit();
+        }
     }
 }
