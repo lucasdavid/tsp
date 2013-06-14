@@ -3,18 +3,17 @@ package Graph;
 /**
  *
  * @author lucasdavid
- * 
- * Describes algorithms that can be used
- * over TSP instances.
- * 
+ *
+ * Describes algorithms that can be used over TSP instances.
+ *
  */
 public class Algorithms {
 
-    /** 
-     * @param _m: adjacent matrix of current graph
-     * 
-     * @return parent[]: a list of nodes parents which represents 
-     *  the minimal spanning tree
+    /**
+     * @param _m: adjacent matrix of the current graph
+     *
+     * @return parent[]: a list of nodes parents which represents the minimal
+     * spanning tree
      */
     public int[] Prim(double[][] _m) {
         int parent[], frj[];
@@ -59,11 +58,10 @@ public class Algorithms {
     }
 
     /**
-     * @param _m adjacent matrix of current graph
-     * @param _root initial node in graph _m
-     * 
-     * @return parent[] list of nodes parents which represents
-     *  the shortest path tree
+     * @param _m adjacent matrix of current graph _root initial node in graph _m
+     *
+     * @return parent[] list containing parents of nodes in graph _m which
+     * represents the shortest path tree
      */
     public int[] Dijkstra(double[][] _m, int _root) {
 
@@ -113,35 +111,37 @@ public class Algorithms {
     }
 
     /**
-     * @param _mst minimal spanning tree
-     * @param _root initial node in _mst tree
-     * 
-     * @return nodeList[] list of visiting sequence 
-     *  over _mst tree, starting from node _root
+     * @param _parent list containing parents of each node in graph _m _root
+     * initial node in _parent tree
+     *
+     * @return nodeList[] list of visiting sequence over _parent tree, starting
+     * from node _root
      */
-    public int[] DFS(int[] _mst, int _root) {
-        int nodeList[], lstLim;
-        lstLim = 0;
+    public int[] DFS(int[] _parent, int _root) {
 
-        nodeList = new int[2 * _mst.length - 1];
+        // visiting sequence
+        int vs[] = new int[2 * _parent.length - 1];
 
-        innerDFS(_mst, _root, nodeList, lstLim);
-        return nodeList;
+        innerDFS(_parent, _root, vs, 0);
+        return vs;
     }
 
     /**
-     * @param _mst
-     * @param _current
-     * @param _nodeList
-     * @param _i
+     * @param 
+     * _parent 
+     * _root root node in current recursive interaction
+     * _vs   list which represents the visiting sequence in _parent tree
+     * _i    first unused position of _vs list
+     *
+     * @return _i current valid position in _nodeLst[]
      */
-    private int innerDFS(int[] _mst, int _current, int[] _nodeLst, int _i) {
-        _nodeLst[_i++] = _current;
+    private int innerDFS(int[] _parent, int _root, int[] _vs, int _i) {
+        _vs[_i++] = _root;
 
-        for (int i = 0; i < _mst.length; i++) {
-            if (i != _current && _mst[i] == _current) {
-                _i = innerDFS(_mst, i, _nodeLst, _i);
-                _nodeLst[_i++] = _current;
+        for (int i = 0; i < _parent.length; i++) {
+            if (i != _root && _parent[i] == _root) {
+                _i = innerDFS(_parent, i, _vs, _i);
+                _vs[_i++] = _root;
             }
         }
 
@@ -149,7 +149,9 @@ public class Algorithms {
     }
 
     /**
-     * @param _m
+     * @param _m adjacent matrix of current graph
+     *
+     * @return cost of a minimal circuit candidate
      */
     public double NearestNeighbor(double[][] _m) {
         double cost = 0;
@@ -172,7 +174,7 @@ public class Algorithms {
                     j = i;
                 }
             }
-            
+
             cost += _m[current][nearest];
             nodes[j] = nodes[--nodesLength];
             current = nearest;
@@ -182,6 +184,11 @@ public class Algorithms {
         return cost;
     }
 
+    /**
+     * @param _m adjacent matrix of current graph
+     *
+     * @return cost of a minimal circuit candidate
+     */
     public double TwiceAround(double[][] _m) {
 
         int _mst[] = Prim(_m);
@@ -213,6 +220,11 @@ public class Algorithms {
         return cost;
     }
 
+    /**
+     * @param _m adjacent matrix of current graph
+     *
+     * @return cost of a minimal circuit candidate
+     */
     public double TwiceAroundWDijkstra(double[][] _m) {
 
         int _mst[] = Dijkstra(_m, 0);
@@ -245,6 +257,11 @@ public class Algorithms {
         return cost;
     }
 
+    /**
+     * @param _m adjacent matrix of current graph
+     *
+     * @return cost of a minimal circuit candidate
+     */
     public double EdgeScore(double[][] _m) {
         int edgeScore[][] = new int[_m.length][_m.length];
         boolean reacheds[] = new boolean[_m.length];
@@ -259,7 +276,7 @@ public class Algorithms {
 
         for (int k = 0; k < _m.length; k++) {
             int spt[] = Dijkstra(_m, k);
-            
+
             for (int i = 0; i < k; i++) {
                 edgeScore[i][spt[i]]++;
             }

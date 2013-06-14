@@ -28,7 +28,7 @@ public class TspFileHandler {
     public TspFileHandler() {
         br = null;
         pw = null;
-        reportFileName = "src/reports/report" + (new Date()).toString();
+        reportFileName = "src/reports/report_" + (new Date()).toString();
     }
 
     public TspFileHandler(String _problem) {
@@ -52,7 +52,7 @@ public class TspFileHandler {
         }
 
         tspFileName = "";
-        reportFileName = "src/reports/report" + (new Date()).toString();
+        reportFileName = "src/reports/report_" + (new Date()).toString();
     }
 
     public void reset(String _problem) throws IOException {

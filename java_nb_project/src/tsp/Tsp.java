@@ -34,7 +34,7 @@ public class Tsp extends Graph {
             m.m[i][i] = 0;
             
             for (int j = i +1; j < m.m.length; j++) {
-                m.m[i][j] = m.m[j][i] = (int) (Math.random() * _max_edge_value);
+                m.m[i][j] = m.m[j][i] = (double) (Math.random() * _max_edge_value);
                 
                 if (m.m[i][j] < _min_edge_value) {
                     m.m[i][j] = m.m[j][i] = m.m[i][j] + _min_edge_value;
@@ -61,6 +61,6 @@ public class Tsp extends Graph {
 
             System.out.println("");
         }
-        System.out.println("---\n" +m.nodes + " nodes\n");
+        System.out.println("---\n" +m.nodes + " nodes\n\n");
     }
 }
