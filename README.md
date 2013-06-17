@@ -2,7 +2,7 @@
 
 **Criação**: 07/02/2013
 
-**Última modificação**: 27/05/2013
+**Última modificação**: 17/06/2013
 
 ##Autor##
 
@@ -24,27 +24,17 @@ Explorando caminhos ótimos e comunidades no problema do caixeiro viajante.
 Manipulação de algoritmos a fim da aproximação do TSP (problema do caixeiro viajante). Conceitos teóricos, como árvores de caminhos mínimos, árvores varredoras mínimas, comunidades ou algoritmos já implementados na linguagem em questão (C++) foram amplamente utilizados durante o trabalho. Seus respectivos autores serão citados, concomitantemente.
 
 ##Composição do repositório##
-###Projeto C++###
-* Implementação do ambiente de análise e comparação de resultados
-* Implementação da leitura de instâncias do TSP a partir de um banco previamente definido: <http://www.tsp.gatech.edu/data/>
-* Geração de grafos k-n, para k > 3, com arestas de pesos aleatórias
-* Algoritmo de Prim
-* Algoritmo de Dijkstra
-* Algoritmo DFS - Busca em profundidade
-* Algoritmo Twice-around
-* Algoritmo Twice-around (dijkstra)
-* Algoritmo EdgeScore simplificado
-* Algoritmo EdgeScore
 
 ###Projeto Java###
 * Implementação do ambiente de análise e comparação de resultados
 * Implementação da leitura de instâncias do TSP a partir de um banco previamente definido: <http://www.tsp.gatech.edu/data/>
-* Geração de grafos k-n, para k > 3, com arestas de pesos aleatórias
-* Algoritmo de Prim
-* Algoritmo de Dijkstra
-* Algoritmo DFS - Busca em profundidade
-* Algoritmo Twice-around
-* Algoritmo Twice-around (dijkstra)
+* Geração de grafos k-n, para k > 3, com arestas de pesos aleatórios não-euclidianos.
+* Algoritmo de Prim.
+* Algoritmo de Dijkstra.
+* Algoritmo DFS - Busca em profundidade.
+* Algoritmo Twice-around.
+* Algoritmo Twice-around (dijkstra).
+* Algoritmo Edge-score.
 
 #Referências#
 
