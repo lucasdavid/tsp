@@ -20,8 +20,8 @@ public class Tsp extends Graph {
         m.validContext = true;
     }
 
-    public Tsp(double[][] _m, int _nodes) {
-        super(_m, _nodes);
+    public Tsp(double[][] _m) {
+        super(_m);
     }
 
     private void RandomInit(int _nodes, int _max_edge_value, int _min_edge_value) {

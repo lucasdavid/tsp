@@ -21,8 +21,8 @@ public abstract class Graph {
         a = new Algorithms();
     }
 
-    public Graph(double[][] _tMatrix, int _nodes) {
-        m = new AdjMatrix(_tMatrix, _nodes);
+    public Graph(double[][] _tMatrix) {
+        m = new AdjMatrix(_tMatrix);
         a = new Algorithms();
     }
 

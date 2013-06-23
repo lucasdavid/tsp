@@ -127,11 +127,9 @@ public class Algorithms {
     }
 
     /**
-     * @param 
-     * _parent 
-     * _root root node in current recursive interaction
-     * _vs   list which represents the visiting sequence in _parent tree
-     * _i    first unused position of _vs list
+     * @param _parent _root root node in current recursive interaction _vs list
+     * which represents the visiting sequence in _parent tree _i first unused
+     * position of _vs list
      *
      * @return _i current valid position in _nodeLst[]
      */
@@ -258,6 +256,46 @@ public class Algorithms {
     }
 
     /**
+     * Define the score of all edges recursively.
+     * 
+     * @param _parent list of parents of node _root
+     * @param _root initial node
+     * @param _scoreM counting matrix
+     * 
+     */
+    public void ScoringDFS(int[] _parent, int _root, int[][] _scoreM) {
+        innerScoringDFS(_parent, _root, _scoreM);
+    }
+
+    /**
+     * Define the score of all edges recursively, where it is the
+     * sum between all sub-edges' score plus one.
+     * 
+     * @param _parent list of parents of node _root
+     * @param _root initial node
+     * @param _scoreM counting matrix
+     * 
+     */
+    private int innerScoringDFS(int[] _parent, int _root, int[][] _scoreM) {
+        int score = 0;
+        
+        // score += every sublink's score
+        for (int i = 0; i < _parent.length; i++) {
+            if (i != _root && _parent[i] == _root) {
+                score += innerScoringDFS(_parent, i, _scoreM);
+            }
+        }
+        
+        if (_root == _parent[_root])
+            return 0;
+        
+        // it's a leaf, return score 1
+        _scoreM[_root][_parent[_root]] += score + 1;
+        _scoreM[_parent[_root]][_root] += score + 1;
+        return score + 1;
+    }
+
+    /**
      * @param _m adjacent matrix of current graph
      *
      * @return cost of a minimal circuit candidate
@@ -276,15 +314,16 @@ public class Algorithms {
 
         for (int k = 0; k < _m.length; k++) {
             int spt[] = Dijkstra(_m, k);
-
-            for (int i = 0; i < k; i++) {
-                edgeScore[i][spt[i]]++;
-            }
-            // ignores node k
-            for (int i = k + 1; i < _m.length; i++) {
-                edgeScore[i][spt[i]]++;
-            }
+            
+            ScoringDFS(spt, k, edgeScore);
         }
+
+//        for (int i = 0; i < edgeScore.length; i++) {
+//            for (int j = 0; j < edgeScore.length; j++) {
+//                System.out.print(edgeScore[i][j]);
+//            }
+//            System.out.println();
+//        }
 
         for (int i = 0; i < _m.length; i++) {
             reacheds[i] = false;
@@ -294,7 +333,7 @@ public class Algorithms {
         double cost = 0;
         while (insertedNodes < _m.length) {
             reacheds[reached = current] = true;
-
+            
             for (int i = 0; i < _m.length; i++) {
                 if (reacheds[i] == true) {
                     continue;

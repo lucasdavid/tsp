@@ -9,16 +9,16 @@ import tsp.*;
 public class Analyzer {
 
     private final AnalysesType currentAnalyses = AnalysesType.RANDOM;
-    // private final AnalysesType currentAnalyses = AnalysesType.RANDOM;
+    //private final AnalysesType currentAnalyses = AnalysesType.FILE_LOADED;
 
     /*
      * Constants related to real instance TSP
      */
-    private final String GRAPH_FILE = "bayg29.tsp";
+    private final String GRAPH_FILE = "berlin52.tsp";
     /*
      * Constants related to random analyses
      */
-    private final int INTERACTIONS = 100;
+    private final int INTERACTIONS = 1000;
     private final int MAX_NODES = 100;
     private final int MIN_NODES = 4;
     private final int MAX_EDGE_VALUE = 100;
@@ -31,10 +31,12 @@ public class Analyzer {
     /*
      * Analyses' essencial attributes
      */
-    private Tsp currentProblem;
-    private double[] algorithmsCosts;
-    private Algorithms[] algorithmsCompared;
-    private TspFileHandler inout;
+    Tsp currentProblem;
+    TspFileHandler inout;
+    double[] algorithmsCosts;
+    int[] algorithmsCount;
+    Algorithms[] algorithmsCompared;
+    int currInter;
 
     public void run() {
         inout = new TspFileHandler(GRAPH_FILE);
@@ -43,29 +45,33 @@ public class Analyzer {
         algorithmsCompared = new Algorithms[]{
             Algorithms.NEARESTNEIGHBOR,
             Algorithms.TWICEAROUND,
-            Algorithms.TWICEAROUNDDIJK,
+            //Algorithms.TWICEAROUNDDIJK,
             Algorithms.EDGESCORE
         };
 
         algorithmsCosts = new double[algorithmsCompared.length];
+        algorithmsCount = new int[algorithmsCompared.length];
+        
+        for (int i = 0; i < algorithmsCount.length; i++) {
+            algorithmsCount[i] = 0;
+        }
 
         try {
 
             if (currentAnalyses == AnalysesType.FILE_LOADED) {
 
                 double m[][] = inout.read();
-                currentProblem = new Tsp(m, m.length);
-                
+                currentProblem = new Tsp(m);
+
                 if (PRINT_PROBLEMS) {
                     currentProblem.print();
                 }
-                
+
                 compare();
 
             } else {
-
                 // for each defined interaction
-                for (int i = 0; i < INTERACTIONS; i++) {
+                for (currInter = 0; currInter < INTERACTIONS; currInter++) {
 
                     int tNodes = (int) (Math.random() * MAX_NODES);
 
@@ -79,17 +85,23 @@ public class Analyzer {
 
                     // randomly generates a instance of TSP
                     currentProblem = new Tsp(tNodes, MAX_EDGE_VALUE, MIN_EDGE_VALUE);
-                    
+
                     if (PRINT_PROBLEMS) {
                         currentProblem.print();
                     }
-                    
-                    compare();
-                }
 
+                    // scoreup the best method
+                    algorithmsCount[compare()]++;
+                }
             }
-            
-            if (GENERATE_REPORT) {
+
+            if (GENERATE_REPORT && currentAnalyses == AnalysesType.RANDOM) {
+                inout.append("Conclusion - shortest circuit count:");
+                
+                for (int i = 0; i < algorithmsCompared.length; i++) {
+                    inout.append(algorithmsCompared[i] + ": " + algorithmsCount[i]);
+                }                
+                
                 inout.commit();
             }
 
@@ -98,18 +110,14 @@ public class Analyzer {
         }
     }
 
-    private void compare() throws Exception {
+    private int compare() throws Exception {
 
         if (GENERATE_REPORT) {
-            inout.append("**Analyses report**\n");
-            inout.append("Algorithms compared\n==================");
+            inout.append("> inst " + currInter + '\n');
+            inout.append("Number of cities: " + currentProblem.getNodes());
         }
 
         for (int i = 0; i < algorithmsCompared.length; i++) {
-            
-            if (GENERATE_REPORT) {
-                inout.append(algorithmsCompared[i].toString());
-            }
 
             if (algorithmsCompared[i] == Algorithms.NEARESTNEIGHBOR) {
                 algorithmsCosts[i] = currentProblem.NearestNeighbor();
@@ -125,13 +133,9 @@ public class Analyzer {
             }
         }
 
-        if (GENERATE_REPORT) {
-            inout.append("\nAlgorithms result\n==================");
-        }
-
         int ret = 0;
         for (int i = 0; i < algorithmsCompared.length; i++) {
-            System.out.println(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
+            //System.out.println(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
 
             if (GENERATE_REPORT) {
                 inout.append(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
@@ -142,11 +146,13 @@ public class Analyzer {
             }
         }
 
-        System.out.println("\nBest result: " + algorithmsCompared[ret] + "\n");
+        //System.out.println("\nBest result: " + algorithmsCompared[ret] + "\n");
 
         if (GENERATE_REPORT) {
-            inout.append("\nBest result\n==================");
-            inout.append(algorithmsCompared[ret].toString() + "\n");
+            inout.append("\nBest result: " + algorithmsCompared[ret].toString() + "\n");
         }
+        
+        // returns the method which gave the shortest solution
+        return ret;
     }
 }
