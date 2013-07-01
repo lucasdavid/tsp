@@ -155,29 +155,36 @@ public class Algorithms {
         double cost = 0;
         int current;
 
-        int nodes[] = new int[_m.length];
+        // unreached nodes so far
+        int unreached[] = new int[_m.length];
         int nodesLength = _m.length - 1;
 
-        for (int i = 0; i < nodes.length - 1; i++) {
-            nodes[i] = i + 1;
+        for (int i = 0; i < unreached.length - 1; i++) {
+            unreached[i] = i + 1;
         }
-        current = nodes[nodes.length - 1] = 0;
+        current = unreached[unreached.length - 1] = 0;
 
         while (nodesLength > 0) {
+
             int j = 0;
-            int nearest = nodes[0];
+            int nearest = unreached[0];
+
             for (int i = 1; i < nodesLength; i++) {
-                if (_m[current][nearest] > _m[current][nodes[i]]) {
-                    nearest = nodes[i];
+                if (_m[current][nearest] > _m[current][unreached[i]]) {
+                    nearest = unreached[i];
                     j = i;
                 }
             }
 
+            // calculates the traveling cost between [current] and [nearest]
             cost += _m[current][nearest];
-            nodes[j] = nodes[--nodesLength];
+            // remove [nearest] node from unreached list
+            unreached[j] = unreached[--nodesLength];
             current = nearest;
         }
 
+        // the last cost: traveling between 
+        // the final city to the original one
         cost += _m[current][0];
         return cost;
     }
@@ -192,30 +199,36 @@ public class Algorithms {
         int _mst[] = Prim(_m);
         int visitedNodes[] = DFS(_mst, 0);
         int lstLim = 2 * _m.length - 1;
-
-        int i = 0;
-        while (i < lstLim - 1) {
-            int j = i + 1;
-
-            while (j < lstLim - 1) {
-                if (visitedNodes[j] != visitedNodes[i]) {
-                    j++;
-                } else {
-                    for (int k = j; k < lstLim - 1; k++) {
-                        visitedNodes[k] = visitedNodes[k + 1];
+        
+        // for each node in visitedNodes[] list
+        for (int i = 0; i < lstLim; i++) {
+            
+            // for each node after [i]
+            for (int j = i +1; j < lstLim; j++) {
+                
+                // if equals, remove it with shift left over the entire array
+                if (visitedNodes[i] == visitedNodes[j]) {
+                    for (int k = j +1; k < lstLim; k++) {
+                        visitedNodes[k -1] = visitedNodes[k];
                     }
+                    
+                    // the last position in visitedNodes[]
+                    // isn't valid anymore
                     lstLim--;
                 }
-            }
-            i++;
+            } 
+        }
+        
+        for (int i = 0; i < lstLim; i++) {
+            System.out.print( visitedNodes[i] + " ");
         }
 
         double cost = 0;
-        for (i = 1; i < lstLim; i++) {
+        for (int i = 1; i < lstLim; i++) {
             cost += _m[ visitedNodes[i - 1]][ visitedNodes[i]];
         }
-
-        return cost;
+        
+        return cost += _m[visitedNodes[lstLim -1]][0];
     }
 
     /**
@@ -256,39 +269,28 @@ public class Algorithms {
     }
 
     /**
-     * Define the score of all edges recursively.
-     * 
+     * Define the score of all edges recursively, where it is the sum between
+     * all sub-edges' score plus one.
+     *
      * @param _parent list of parents of node _root
      * @param _root initial node
      * @param _scoreM counting matrix
-     * 
+     *
      */
-    public void ScoringDFS(int[] _parent, int _root, int[][] _scoreM) {
-        innerScoringDFS(_parent, _root, _scoreM);
-    }
-
-    /**
-     * Define the score of all edges recursively, where it is the
-     * sum between all sub-edges' score plus one.
-     * 
-     * @param _parent list of parents of node _root
-     * @param _root initial node
-     * @param _scoreM counting matrix
-     * 
-     */
-    private int innerScoringDFS(int[] _parent, int _root, int[][] _scoreM) {
+    private int ScoringDFS(int[] _parent, int _root, int[][] _scoreM) {
         int score = 0;
-        
+
         // score += every sublink's score
         for (int i = 0; i < _parent.length; i++) {
             if (i != _root && _parent[i] == _root) {
-                score += innerScoringDFS(_parent, i, _scoreM);
+                score += ScoringDFS(_parent, i, _scoreM);
             }
         }
-        
-        if (_root == _parent[_root])
+
+        if (_root == _parent[_root]) {
             return 0;
-        
+        }
+
         // it's a leaf, return score 1
         _scoreM[_root][_parent[_root]] += score + 1;
         _scoreM[_parent[_root]][_root] += score + 1;
@@ -300,12 +302,12 @@ public class Algorithms {
      *
      * @return cost of a minimal circuit candidate
      */
-    public double EdgeScore(double[][] _m) {
-        int edgeScore[][] = new int[_m.length][_m.length];
-        boolean reacheds[] = new boolean[_m.length];
-        int insertedNodes = 1;
-        int current = 0;
+    public double EdgeScore(double[][] _m)  {
 
+        double cost = 0;
+        int edgeScore[][] = new int[_m.length][_m.length];
+
+        // initialize the edgeScore matrix
         for (int i = 0; i < _m.length; i++) {
             for (int j = 0; j < _m.length; j++) {
                 edgeScore[i][j] = 0;
@@ -313,45 +315,50 @@ public class Algorithms {
         }
 
         for (int k = 0; k < _m.length; k++) {
+            // calculates the shortest-path tree
             int spt[] = Dijkstra(_m, k);
-            
+
+            // calculates the score of each link in spt[]
             ScoringDFS(spt, k, edgeScore);
         }
 
-//        for (int i = 0; i < edgeScore.length; i++) {
-//            for (int j = 0; j < edgeScore.length; j++) {
-//                System.out.print(edgeScore[i][j]);
-//            }
-//            System.out.println();
-//        }
+        int unreachedNodes[] = new int[_m.length];
+        int unreachedNodesLength = _m.length - 1;
 
         for (int i = 0; i < _m.length; i++) {
-            reacheds[i] = false;
+            unreachedNodes[i] = i + 1;
         }
+        int current = unreachedNodes[unreachedNodes.length - 1] = 0;
 
-        int reached;
-        double cost = 0;
-        while (insertedNodes < _m.length) {
-            reacheds[reached = current] = true;
-            
-            for (int i = 0; i < _m.length; i++) {
-                if (reacheds[i] == true) {
-                    continue;
-                }
-                if (edgeScore[current][i] > edgeScore[current][reached]) {
-                    reached = i;
-                } else if (edgeScore[current][i] == edgeScore[current][reached]
-                        && _m[current][i] <= _m[current][reached]) {
-                    reached = i;
+        // while there are nodes which weren't chose
+        while (unreachedNodesLength > 0) {
+
+            int j = 0;
+            int reached = unreachedNodes[0];
+
+            for (int i = 1; i < unreachedNodesLength; i++) {
+
+                // choose the link with highest score or, in case 
+                // that the two link has the same score, choose 
+                // the lighter one (in the original graph).
+                if (edgeScore[current][unreachedNodes[i]] > edgeScore[current][reached]
+                        || edgeScore[current][unreachedNodes[i]] == edgeScore[current][reached]
+                        && _m[current][unreachedNodes[i]] < _m[current][reached]) {
+
+                    reached = unreachedNodes[i];
+                    j = i;
                 }
             }
 
-            insertedNodes++;
-            reacheds[reached] = true;
+            // calculates the cost of traveling between [current] and [reached]
             cost += _m[current][reached];
+
+            // eliminates the node [reached] from the unreached list
+            unreachedNodes[j] = unreachedNodes[--unreachedNodesLength];
             current = reached;
         }
 
+        // the cost of returning to the original city
         cost += _m[current][0];
         return cost;
     }
