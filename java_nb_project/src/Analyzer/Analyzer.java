@@ -8,8 +8,8 @@ import tsp.*;
  */
 public class Analyzer {
 
-//    private final AnalysesType currentAnalyses = AnalysesType.RANDOM;
-    private final AnalysesType currentAnalyses = AnalysesType.FILE_LOADED;
+    private final AnalysesType currentAnalyses = AnalysesType.RANDOM;
+//    private final AnalysesType currentAnalyses = AnalysesType.FILE_LOADED;
 
     /*
      * Constants related to real instance TSP
@@ -18,7 +18,7 @@ public class Analyzer {
     /*
      * Constants related to random analyses
      */
-    private final int INTERACTIONS = 100;
+    private final int INTERACTIONS = 10;
     private final int MAX_NODES = 100;
     private final int MIN_NODES = 4;
     private final int MAX_EDGE_VALUE = 100;
@@ -27,7 +27,7 @@ public class Analyzer {
      * Constants related to compare() method
      */
     private final boolean PRINT_MATRIX = false;
-    private final boolean GENERATE_REPORT = false;
+    private final boolean GENERATE_REPORT = true;
     /*
      * Analyses' essencial attributes
      */
@@ -43,9 +43,9 @@ public class Analyzer {
 
         // Alter the comparing Algorithms here
         algorithmsCompared = new Algorithms[]{
-            Algorithms.NEARESTNEIGHBOR,
+//            Algorithms.NEARESTNEIGHBOR,
             Algorithms.TWICEAROUND,
-            //Algorithms.TWICEAROUNDDIJK,
+//            Algorithms.TWICEAROUNDDIJK,
             Algorithms.EDGESCORE
         };
 
@@ -135,7 +135,7 @@ public class Analyzer {
 
         int ret = 0;
         for (int i = 0; i < algorithmsCompared.length; i++) {
-            System.out.println(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
+//            System.out.println(algorithmsCompared[i] + ": " + algorithmsCosts[i]);
 
             if (GENERATE_REPORT) {
                 inout.append(algorithmsCompared[i] + ": " + algorithmsCosts[i]);

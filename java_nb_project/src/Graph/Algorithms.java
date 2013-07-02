@@ -218,10 +218,6 @@ public class Algorithms {
                 }
             } 
         }
-        
-        for (int i = 0; i < lstLim; i++) {
-            System.out.print( visitedNodes[i] + " ");
-        }
 
         double cost = 0;
         for (int i = 1; i < lstLim; i++) {
