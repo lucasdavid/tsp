@@ -46,9 +46,6 @@ public class Tsp extends Graph {
         }
     }
 
-//    private int[][] ReadFromFile(String _file) {
-//        return null;
-//    }
     public String report() {
         return new String();
     }

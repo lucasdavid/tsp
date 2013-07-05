@@ -14,7 +14,7 @@ public class Analyzer {
     /*
      * Constants related to real instance TSP
      */
-    private final String GRAPH_FILE = "bayg29.tsp";
+    private final String GRAPH_FILE = "ali535.tsp";
     /*
      * Constants related to random analyses
      */
@@ -43,10 +43,11 @@ public class Analyzer {
 
         // Alter the comparing Algorithms here
         algorithmsCompared = new Algorithms[]{
-            //            Algorithms.NEARESTNEIGHBOR,
+            Algorithms.NEARESTNEIGHBOR,
             Algorithms.TWICEAROUND,
-            //            Algorithms.TWICEAROUNDDIJK,
-            Algorithms.EDGESCORE,};
+            Algorithms.TWICEAROUNDDIJK,
+            Algorithms.EDGESCORE
+        };
 
         algorithmsCosts = new double[algorithmsCompared.length];
         algorithmsCount = new int[algorithmsCompared.length];

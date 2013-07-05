@@ -3,12 +3,10 @@ package tsp;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOError;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
 import java.util.Date;
-import javax.imageio.IIOException;
 
 /**
  * class TspFileHandler
@@ -126,7 +124,7 @@ public class TspFileHandler {
             }
 
             for (i = 0; i < graph.length; i++) {
-                for (j = 0; j < graph.length; j++) {
+                for (j = i +1; j < graph.length; j++) {
                     dx = Math.pow(nodes[i][0] - nodes[j][0], 2);
                     dy = Math.pow(nodes[i][1] - nodes[j][1], 2);
 
