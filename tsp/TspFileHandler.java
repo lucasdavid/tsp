@@ -39,30 +39,6 @@ public class TspFileHandler {
         reportFileName = "src/reports/" + _report;
     }
 
-    public void reset() throws IOException {
-        if (br != null) {
-                br.close();
-                br = null;
-        }
-        if (pw != null) {
-                pw.close();
-                br = null;
-        }
-
-        tspFileName = "";
-        reportFileName = "src/reports/report_" + (new Date()).toString();
-    }
-
-    public void reset(String _problem) throws IOException {
-        reset();
-        tspFileName = _problem;
-    }
-
-    public void reset(String _problem, String _report) throws IOException {
-        reset(_problem);
-        reportFileName = _report;
-    }
-
     public double[][] read() throws Exception {
         br = new BufferedReader(new FileReader(tspFileName));
 
