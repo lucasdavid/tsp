@@ -6,7 +6,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.StringTokenizer;
-import java.util.Date;
 
 /**
  * class TspFileHandler
@@ -26,17 +25,17 @@ public class TspFileHandler {
     public TspFileHandler() {
         br = null;
         pw = null;
-        reportFileName = "src/reports/report_" + (new Date()).toString();
     }
 
     public TspFileHandler(String _problem) {
         this();
         tspFileName = "src/problems/" + _problem;
+        reportFileName = "src/reports/" + _problem + ".txt";
     }
 
     public TspFileHandler(String _problem, String _report) {
         this(_problem);
-        reportFileName = "src/reports/" + _report;
+        reportFileName = "src/reports/" + _report + ".txt";
     }
 
     public double[][] read() throws Exception {

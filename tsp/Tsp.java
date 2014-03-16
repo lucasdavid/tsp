@@ -48,9 +48,9 @@ public class Tsp extends Graph {
     public String toString() {
         String print = "";
 
-        for (double[] m1 : m) {
-            for (double m2 : m1) {
-                print += m2 + "  ";
+        for (int i = 0; i < m.length; i++) {
+            for (int j = 0; j < m[i].length; j++) {
+                print += m[i][j] + " ";
             }
             print += '\n';
         }

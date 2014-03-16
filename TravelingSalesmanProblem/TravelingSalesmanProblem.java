@@ -1,12 +1,12 @@
-package runner;
+package TravelingSalesmanProblem;
 
-import Analyzer.*;
+import Analyzer.Analyzer;
 
 /**
  *
  * @author lucasdavid
  */
-public class TSP {
+public class TravelingSalesmanProblem {
 
     /**
      * @param args the command line arguments
@@ -14,4 +14,5 @@ public class TSP {
     public static void main(String[] args) {
         new Analyzer().run();
     }
+    
 }

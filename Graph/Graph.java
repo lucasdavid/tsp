@@ -5,9 +5,9 @@ package Graph;
  * @author lucasdavid
  */
 public abstract class Graph {
-    
+
     protected double[][] m;
-    
+
     public double at(int _a, int _b) throws Exception {
         return m[_a][_b];
     }
@@ -120,7 +120,7 @@ public abstract class Graph {
     }
 
     /**
-     * @param _parent 
+     * @param _parent
      * @param _root node in current recursive interaction
      * @param _vs list that represents the visiting sequence in _parent tree
      * @param _i first unused position of _vs list
@@ -188,32 +188,32 @@ public abstract class Graph {
         int mst[] = Prim();
         int visitedNodes[] = DFS(mst, 0);
         int lstLim = 2 * m.length - 1;
-        
+
         // for each node in visitedNodes[] list
         for (int i = 0; i < lstLim; i++) {
-            
+
             // for each node after [i]
-            for (int j = i +1; j < lstLim; j++) {
-                
+            for (int j = i + 1; j < lstLim; j++) {
+
                 // if equals, remove it with shift left over the entire array
                 if (visitedNodes[i] == visitedNodes[j]) {
-                    for (int k = j +1; k < lstLim; k++) {
-                        visitedNodes[k -1] = visitedNodes[k];
+                    for (int k = j + 1; k < lstLim; k++) {
+                        visitedNodes[k - 1] = visitedNodes[k];
                     }
-                    
+
                     // the last position in visitedNodes[]
                     // isn't valid anymore
                     lstLim--;
                 }
-            } 
+            }
         }
 
         double cost = 0;
         for (int i = 1; i < lstLim; i++) {
             cost += m[ visitedNodes[i - 1]][ visitedNodes[i]];
         }
-        
-        return cost += m[visitedNodes[lstLim -1]][0];
+
+        return cost += m[visitedNodes[lstLim - 1]][0];
     }
 
     /**
@@ -254,7 +254,7 @@ public abstract class Graph {
     /**
      * @return cost of a minimal circuit candidate.
      */
-    public double EdgeScore()  {
+    public double EdgeScore() {
         double cost = 0;
         int edgeScore[][] = new int[m.length][m.length];
 
@@ -313,10 +313,9 @@ public abstract class Graph {
         cost += m[current][0];
         return cost;
     }
-    
+
     /**
-     * Define the score of all edges recursively, where it is the sum between
-     * all sub-edges' score plus one.
+     * Define the score of all edges recursively, where it is the sum between all sub-edges' score plus one.
      *
      * @param _parent list of parents of node _root
      * @param _root initial node

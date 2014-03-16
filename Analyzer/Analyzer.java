@@ -8,8 +8,8 @@ import tsp.*;
  */
 public class Analyzer {
 
-    private final AnalysesType currentAnalyses = AnalysesType.RANDOM;
-//    private final AnalysesType currentAnalyses = AnalysesType.FILE_LOADED;
+//    private final AnalysesType currentAnalyses = AnalysesType.RANDOM;
+    private final AnalysesType currentAnalyses = AnalysesType.FILE_LOADED;
 
     /*
      * Constants related to real instance TSP
@@ -26,8 +26,8 @@ public class Analyzer {
     /*
      * Constants related to compare() method
      */
-    private final boolean PRINT_MATRIX = true;
-    private final boolean GENERATE_REPORT = false;
+    private final boolean PRINT_MATRIX = false;
+    private final boolean GENERATE_REPORT = true;
     /*
      * Analyses' essencial attributes
      */
@@ -82,7 +82,7 @@ public class Analyzer {
                     if (PRINT_MATRIX) {
                         System.out.print(currentProblem);
                     }
-                    // scoreup the best method
+                    // increase the score of the best method
                     algorithmsCount[compare()]++;
                 }
             }
