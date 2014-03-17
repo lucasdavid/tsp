@@ -8,8 +8,8 @@ import tsp.*;
  */
 public class Analyzer {
 
-//    private final AnalysesType currentAnalyses = AnalysesType.RANDOM;
-    private final AnalysesType currentAnalyses = AnalysesType.FILE_LOADED;
+    private final AnalysesType currentAnalyses = AnalysesType.RANDOM;
+//    private final AnalysesType currentAnalyses = AnalysesType.FILE_LOADED;
 
     /*
      * Constants related to real instance TSP
@@ -19,7 +19,7 @@ public class Analyzer {
      * Constants related to random analyses
      */
     private final int INTERACTIONS = 1;
-    private final int MAX_NODES = 10;
+    private final int MAX_NODES = 5;
     private final int MIN_NODES = 4;
     private final int MAX_EDGE_VALUE = 100;
     private final int MIN_EDGE_VALUE = 1;
@@ -43,10 +43,11 @@ public class Analyzer {
 
         // Alter the comparing Algorithms here
         algorithmsCompared = new Algorithms[]{
-            Algorithms.NEARESTNEIGHBOR,
-            Algorithms.TWICEAROUND,
-            Algorithms.TWICEAROUNDDIJK,
-            Algorithms.EDGESCORE
+//            Algorithms.NEARESTNEIGHBOR,
+//            Algorithms.TWICEAROUND,
+//            Algorithms.TWICEAROUNDDIJK,
+//            Algorithms.EDGESCORE,
+            Algorithms.ANTCOLONY,
         };
 
         algorithmsCosts = new double[algorithmsCompared.length];

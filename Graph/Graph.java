@@ -1,5 +1,7 @@
 package Graph;
 
+import java.util.LinkedList;
+
 /**
  *
  * @author lucasdavid
@@ -341,5 +343,72 @@ public abstract class Graph {
         _scoreM[_root][_parent[_root]] += score + 1;
         _scoreM[_parent[_root]][_root] += score + 1;
         return score + 1;
+    }
+
+    public double AntColonyOptimization() {
+        double cost = 0;
+        float randomWalk = .05f;
+        int numberOfAnts = 3 * m.length;
+
+        int[][] walk = new int[m.length][m.length];
+
+        LinkedList<LinkedList<Integer>> ants = new LinkedList<>();
+
+        for (int i = 0; i < numberOfAnts; i++) {
+            // an ant starts from a random city
+            LinkedList<Integer> ant = new LinkedList<>();
+            ant.add((int) (Math.random() * m.length));
+
+            ants.add(ant);
+        }
+
+        for (int iteration = 0; iteration < m.length - 1; iteration++) {
+            for (LinkedList<Integer> ant : ants) {
+
+                LinkedList<Integer> cities = new LinkedList<>();
+                for (int i = 0; i < m.length; i++) {
+                    if (!ant.contains(i)) {
+                        cities.add(i);
+                    }
+                }
+
+                int current = ant.getLast();
+                int best = cities.getFirst();
+
+                for (Integer city : cities) {
+                    if (walk[current][city] > walk[current][best]
+                            || walk[current][city] > walk[current][best] && m[current][city] < m[current][best]
+                            || Math.random() < randomWalk) {
+                        best = city;
+                    }
+                }
+
+                walk[current][best]++;
+            }
+        }
+        
+        ants.clear();
+        
+        LinkedList<Integer> path = new LinkedList<>();
+        path.add(0);
+        
+        int current = 0;
+        
+        for (int k = 0; k < m.length; k++)
+        {
+            int best = current;
+
+            for (int i = 0; i < m.length; i++) {
+                if (walk[current][i] >= walk[current][best] && !path.contains(i)) {
+                    best = i;
+                }
+            }
+            
+            cost += m[current][best];
+            path.add(best);
+            current = best;
+        }
+
+        return cost + m[current][0];
     }
 }
