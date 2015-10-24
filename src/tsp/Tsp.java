@@ -7,14 +7,15 @@ import Graph.Graph;
  * @author lucasdavid
  */
 public class Tsp extends Graph {
-    
+
     public Tsp(double _m[][]) {
         m = _m;
     }
 
     public Tsp(int _nodes, int _max_edge_value, int _min_edge_value) {
         if (_nodes < 4) {
-            throw new IllegalArgumentException("TSP is not applicable for graph instances with " + _nodes + " nodes or below.");
+            throw new IllegalArgumentException(
+                "TSP is not applicable for graph instances with " + _nodes + " nodes or below.");
         }
 
         m = new double[_nodes][_nodes];
@@ -43,13 +44,13 @@ public class Tsp extends Graph {
     public int nodes() {
         return m.length;
     }
-    
+
     @Override
     public String toString() {
         String print = "";
 
         for (int i = 0; i < m.length; i++) {
-            for (int j = 0; j < m[i].length; j++) {
+            for (int j = i + 1; j < m[i].length; j++) {
                 print += m[i][j] + " ";
             }
             print += '\n';

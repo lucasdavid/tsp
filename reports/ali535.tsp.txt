@@ -1,9 +1,0 @@
-> inst 0
-
-Number of cities: 5
-ANTCOLONY: 0.0
-
-Best result: ANTCOLONY
-
-Conclusion - shortest circuit count:
-ANTCOLONY: 1
