@@ -10,9 +10,9 @@ import java.util.StringTokenizer;
 /**
  * class TspFileHandler
  *
- * Reads TSP instances from files and decode it into graph notation.
- * Writes reports after a algorithm's execution.
- * 
+ * Reads TSP instances from files and decode it into graph notation. Writes
+ * reports after a algorithm's execution.
+ *
  * @author david
  */
 public class TspFileHandler {
@@ -38,13 +38,13 @@ public class TspFileHandler {
         reportFileName = "src/reports/" + _report + ".txt";
     }
 
-    public double[][] read() throws Exception {
+    public float[][] read() throws Exception {
         br = new BufferedReader(new FileReader(tspFileName));
 
         String sCurrentLine, token;
-        double graph[][], nodes[][];
+        float graph[][], nodes[][];
         int dimension;
-        double dx, dy;
+        float dx, dy;
         int i, j;
 
         graph = null;
@@ -59,11 +59,11 @@ public class TspFileHandler {
             if (token.equals("DIMENSION:")) {
                 token = st.nextToken();
                 dimension = Integer.parseInt(token);
-                graph = new double[dimension][dimension];
+                graph = new float[dimension][dimension];
 
             } else if (sCurrentLine.equals("NODE_COORD_SECTION")
-                    || sCurrentLine.equals("EDGE_WEIGHT_SECTION")
-                    || sCurrentLine.equals("DISPLAY_DATA_SECTION")) {
+                || sCurrentLine.equals("EDGE_WEIGHT_SECTION")
+                || sCurrentLine.equals("DISPLAY_DATA_SECTION")) {
                 break; // end of file header
             }
         }
@@ -74,36 +74,36 @@ public class TspFileHandler {
 
         // Reading edge values under "EDGE_WEIGHT_SECTION" standard
         if (sCurrentLine.equals("EDGE_WEIGHT_SECTION")) {
-            
+
             for (i = 0; i < graph.length; i++) {
                 sCurrentLine = br.readLine();
                 StringTokenizer st = new StringTokenizer(sCurrentLine, " ");
 
                 for (j = i + 1; j < graph.length; j++) {
                     token = st.nextToken();
-                    graph[i][j] = graph[j][i] = Double.parseDouble(token);
+                    graph[i][j] = graph[j][i] = Float.parseFloat(token);
                 }
             }
         } else {
             // sCurrentLine == NODE_COORD_SECTION
             // Calculate Pitagoras' distance between each node.
             i = 0;
-            nodes = new double[dimension][2];
+            nodes = new float[dimension][2];
 
             while (i < dimension && (sCurrentLine = br.readLine()) != null) {
                 StringTokenizer st = new StringTokenizer(sCurrentLine, " ");
                 st.nextToken(); // ignoring node index
-                nodes[i][0] = Double.parseDouble(st.nextToken());
-                nodes[i][1] = Double.parseDouble(st.nextToken());
+                nodes[i][0] = Float.parseFloat(st.nextToken());
+                nodes[i][1] = Float.parseFloat(st.nextToken());
                 i++;
             }
 
             for (i = 0; i < graph.length; i++) {
-                for (j = i +1; j < graph.length; j++) {
-                    dx = Math.pow(nodes[i][0] - nodes[j][0], 2);
-                    dy = Math.pow(nodes[i][1] - nodes[j][1], 2);
+                for (j = i + 1; j < graph.length; j++) {
+                    dx = (float) Math.pow(nodes[i][0] - nodes[j][0], 2);
+                    dy = (float) Math.pow(nodes[i][1] - nodes[j][1], 2);
 
-                    graph[i][j] = graph[j][i] = Math.sqrt(dx + dy);
+                    graph[i][j] = graph[j][i] = (float) Math.sqrt(dx + dy);
                 }
             }
         }
@@ -118,7 +118,7 @@ public class TspFileHandler {
         if (pw == null) {
             pw = new PrintWriter(new FileWriter(reportFileName));
         }
-        
+
         pw.println(_line);
         pw.flush();
     }

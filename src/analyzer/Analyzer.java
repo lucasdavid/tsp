@@ -1,14 +1,13 @@
-package Analyzer;
+package analyzer;
 
+import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import tsp.*;
 
-/**
- *
- * @author david
- */
 public class Analyzer {
 
-    final int INTERACTIONS = 100;
+    final int ITERACTIONS = 100;
     final int MAX_NODES = 5;
     final int MIN_NODES = 4;
     final int MAX_EDGE_VALUE = 100;
@@ -16,44 +15,48 @@ public class Analyzer {
     final boolean PRINT_MATRIX = false;
     final boolean GENERATE_REPORT = true;
 
-    AnalysesType type;
+    Type type;
     String file;
 
     Tsp problem;
     TspFileHandler inout;
-    int currInter;
-    int[] counters;
-    double[] costs;
-    Algorithms[] compared;
+    int iteraction = 1;
+    Solver[] compared;
+
+    TestStatisticsHelper statistics;
 
     public Analyzer() {
-        this(AnalysesType.RANDOM, "report.data");
+        this(
+            new Solver[]{Solver.TWICE_AROUND, Solver.TWICE_AROUND_DIJKSTRA},
+            Type.RANDOM, "report.data");
     }
 
-    public Analyzer(AnalysesType type, String file) {
+    public Analyzer(String file) {
+        this(new Solver[]{Solver.TWICE_AROUND, Solver.TWICE_AROUND_DIJKSTRA},
+            Type.FILE_LOADED, file);
+    }
+
+    public Analyzer(Solver[] solvers, Type type, String file) {
+        if (solvers.length == 0) {
+            throw new RuntimeException("Cannot create Analyzer without solvers");
+        }
+
+        this.compared = solvers;
         this.type = type;
         this.file = file;
+
+        this.statistics = new TestStatisticsHelper(solvers);
     }
 
     public void run() throws Exception {
         System.out.println("Twice-around benchmarking has started.");
 
         inout = new TspFileHandler(file);
+        inout.append("# Instance, number of cities.");
+        inout.append("## Solver, Cost, Time.\n");
 
-        compared = new Algorithms[]{
-            Algorithms.NEARESTNEIGHBOR,
-            Algorithms.TWICEAROUND,
-            Algorithms.TWICEAROUNDDIJK,};
-
-        costs = new double[compared.length];
-        counters = new int[compared.length];
-
-        for (int i = 0; i < counters.length; i++) {
-            counters[i] = 0;
-        }
-
-        if (type == AnalysesType.FILE_LOADED) {
-            double m[][] = inout.read();
+        if (type == Type.FILE_LOADED) {
+            float m[][] = inout.read();
             problem = new Tsp(m);
 
             if (PRINT_MATRIX) {
@@ -61,69 +64,68 @@ public class Analyzer {
             }
             compare();
         } else {
-            // for each defined interaction
-            for (currInter = 0; currInter < INTERACTIONS; currInter++) {
-                int tNodes = (int) (Math.random() * MAX_NODES);
+            Random r = new Random();
 
-                if (tNodes < MIN_NODES) {
-                    tNodes += MIN_NODES;
+            for (iteraction = 0; iteraction < ITERACTIONS; iteraction++) {
+                int nodes = r.nextInt((MAX_NODES - MIN_NODES) + 1) + MIN_NODES;
 
-                    if (tNodes > MAX_NODES) {
-                        tNodes = MAX_NODES;
-                    }
-                }
-                // randomly generates a instance of TSP
-                problem = new Tsp(tNodes, MAX_EDGE_VALUE, MIN_EDGE_VALUE);
+                problem = new Tsp(nodes, MAX_EDGE_VALUE, MIN_EDGE_VALUE);
+
                 if (PRINT_MATRIX) {
                     System.out.print(problem);
                 }
-                // increase the score of the best method
-                counters[compare()]++;
+
+                compare();
             }
         }
 
-        if (GENERATE_REPORT && type == AnalysesType.RANDOM) {
-            inout.append("Conclusion - shortest circuit count:");
+        if (GENERATE_REPORT) {
+            inout.append("\n# Conclusion");
 
-            for (int i = 0; i < compared.length; i++) {
-                inout.append(compared[i] + ": " + counters[i]);
+            for (Solver s : compared) {
+                Map<String, Float> result = statistics.solverMean(s, iteraction);
+                inout.append("# " + s + ": " + result.toString());
             }
+
             inout.commit();
         }
 
         System.out.println("Finished.");
     }
 
-    private int compare() throws Exception {
+    private void compare() throws Exception {
         if (GENERATE_REPORT) {
-            inout.append("> inst " + currInter + '\n');
-            inout.append("Number of cities: " + problem.nodes());
+            inout.append(String.format("%d, %d", iteraction, problem.nodes()));
         }
 
-        for (int i = 0; i < compared.length; i++) {
-            if (compared[i] == Algorithms.NEARESTNEIGHBOR) {
-                costs[i] = problem.NearestNeighbor();
-            } else if (compared[i] == Algorithms.TWICEAROUND) {
-                costs[i] = problem.TwiceAround();
-            } else if (compared[i] == Algorithms.TWICEAROUNDDIJK) {
-                costs[i] = problem.TwiceAroundDijkstra();
+        Solver bestSolver = compared[0];
+        float bestCost = Float.MAX_VALUE;
+
+        for (Solver s : compared) {
+            long timeit = -System.nanoTime();
+
+            float cost = s == Solver.NEAREST_NEIGHBOR ? problem.NearestNeighbor()
+                : s == Solver.TWICE_AROUND ? problem.TwiceAround()
+                    : s == Solver.TWICE_AROUND_DIJKSTRA ? problem.TwiceAroundDijkstra()
+                        : 0f;
+
+            timeit += System.nanoTime();
+
+            statistics.add(s, "time", TimeUnit.NANOSECONDS.toMillis(timeit));
+            statistics.add(s, "cost", cost);
+
+            if (bestCost > cost) {
+                bestSolver = s;
+                bestCost = cost;
             }
-        }
 
-        int ret = 0;
-        for (int i = 0; i < compared.length; i++) {
             if (GENERATE_REPORT) {
-                inout.append(compared[i] + ": " + costs[i]);
-            }
-            if (costs[i] < costs[ret]) {
-                ret = i;
+                inout.append(String.format("%s,%f,%d", s, cost, timeit));
             }
         }
+        
+        statistics.bestThisIteration(bestSolver);
 
-        if (GENERATE_REPORT) {
-            inout.append("\nBest result: " + compared[ret].toString() + "\n");
-        }
-        // returns the method which gave the shortest solution
-        return ret;
+        inout.append("");
     }
 }

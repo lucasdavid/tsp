@@ -1,14 +1,10 @@
-package Graph;
+package graph;
 
-/**
- *
- * @author lucasdavid
- */
 public abstract class Graph {
 
-    protected double[][] m;
+    protected float[][] m;
 
-    public double at(int _a, int _b) throws Exception {
+    public float at(int _a, int _b) throws Exception {
         return m[_a][_b];
     }
 
@@ -18,9 +14,9 @@ public abstract class Graph {
      */
     public int[] Prim() {
         int parent[], frj[];
-        double cost[], mincost;
+        float cost[], mincost;
 
-        cost = new double[m.length];
+        cost = new float[m.length];
         frj = new int[m.length];
         parent = new int[m.length];
 
@@ -63,7 +59,7 @@ public abstract class Graph {
      * shortest path tree.
      */
     int[] Dijkstra(int _root) {
-        double mincost, cost[] = new double[m.length];
+        float mincost, cost[] = new float[m.length];
         int frj[], parent[], w0;
 
         frj = new int[m.length];
@@ -146,8 +142,8 @@ public abstract class Graph {
     /**
      * @return cost of a minimal circuit candidate.
      */
-    public double NearestNeighbor() {
-        double cost = 0;
+    public float NearestNeighbor() {
+        float cost = 0;
         int current;
 
         // unreached nodes so far
@@ -189,7 +185,7 @@ public abstract class Graph {
      *
      * @return cost of a minimal circuit candidate.
      */
-    public double TwiceAround() {
+    public float TwiceAround() {
         int mst[] = Prim();
         return TwiceAround(mst);
     }
@@ -202,12 +198,12 @@ public abstract class Graph {
      *
      * @return cost of a minimal circuit candidate.
      */
-    public double TwiceAroundDijkstra() {
+    public float TwiceAroundDijkstra() {
         int spt[] = Dijkstra(0);
         return TwiceAround(spt);
     }
 
-    public double TwiceAround(int[] inputTree) {
+    public float TwiceAround(int[] inputTree) {
         int visitedNodes[] = DFS(inputTree, 0);
         int lstLim = 2 * m.length - 1;
 
@@ -230,7 +226,7 @@ public abstract class Graph {
             }
         }
 
-        double cost = 0;
+        float cost = 0;
         for (int i = 1; i < lstLim; i++) {
             cost += m[visitedNodes[i - 1]][visitedNodes[i]];
         }

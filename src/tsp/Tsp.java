@@ -1,6 +1,6 @@
 package tsp;
 
-import Graph.Graph;
+import graph.Graph;
 
 /**
  *
@@ -8,7 +8,7 @@ import Graph.Graph;
  */
 public class Tsp extends Graph {
 
-    public Tsp(double _m[][]) {
+    public Tsp(float _m[][]) {
         m = _m;
     }
 
@@ -18,13 +18,13 @@ public class Tsp extends Graph {
                 "TSP is not applicable for graph instances with " + _nodes + " nodes or below.");
         }
 
-        m = new double[_nodes][_nodes];
+        m = new float[_nodes][_nodes];
 
         for (int i = 0; i < m.length; i++) {
             m[i][i] = 0;
 
             for (int j = i + 1; j < m.length; j++) {
-                m[i][j] = m[j][i] = (double) (Math.random() * _max_edge_value);
+                m[i][j] = m[j][i] = (float) (Math.random() * _max_edge_value);
 
                 if (m[i][j] < _min_edge_value) {
                     m[i][j] = m[j][i] = m[i][j] + _min_edge_value;

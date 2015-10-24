@@ -1,6 +1,6 @@
 package runner;
 
-import Analyzer.*;
+import analyzer.*;
 
 /**
  *
