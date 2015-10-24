@@ -8,7 +8,7 @@ import tsp.*;
 public class Analyzer {
 
     final int ITERACTIONS = 100;
-    final int MAX_NODES = 5;
+    final int MAX_NODES = 1000;
     final int MIN_NODES = 4;
     final int MAX_EDGE_VALUE = 100;
     final int MIN_EDGE_VALUE = 1;
@@ -26,9 +26,8 @@ public class Analyzer {
     TestStatisticsHelper statistics;
 
     public Analyzer() {
-        this(
-            new Solver[]{Solver.TWICE_AROUND, Solver.TWICE_AROUND_DIJKSTRA},
-            Type.RANDOM, "report.data");
+        this(new Solver[]{Solver.TWICE_AROUND, Solver.TWICE_AROUND_DIJKSTRA},
+            Type.INCREASING_SIZE_RANDOM_GRAPH, "report.data");
     }
 
     public Analyzer(String file) {
@@ -49,11 +48,10 @@ public class Analyzer {
     }
 
     public void run() throws Exception {
-        System.out.println("Twice-around benchmarking has started.");
+        System.out.println("Analyzer has started.");
 
         inout = new TspFileHandler(file);
-        inout.append("# Instance, number of cities.");
-        inout.append("## Solver, Cost, Time.\n");
+        inout.append("# Feature order: solver name, Cost, Time.\n");
 
         if (type == Type.FILE_LOADED) {
             float m[][] = inout.read();
@@ -67,7 +65,9 @@ public class Analyzer {
             Random r = new Random();
 
             for (iteraction = 0; iteraction < ITERACTIONS; iteraction++) {
-                int nodes = r.nextInt((MAX_NODES - MIN_NODES) + 1) + MIN_NODES;
+                int nodes = type == Type.RANDOM_GRAPH
+                    ? r.nextInt((MAX_NODES - MIN_NODES)) + MIN_NODES
+                    : (int)(((float)iteraction * (MAX_NODES - MIN_NODES)) / ITERACTIONS + MIN_NODES);
 
                 problem = new Tsp(nodes, MAX_EDGE_VALUE, MIN_EDGE_VALUE);
 
@@ -90,12 +90,12 @@ public class Analyzer {
             inout.commit();
         }
 
-        System.out.println("Finished.");
+        System.out.println(".");
     }
 
     private void compare() throws Exception {
         if (GENERATE_REPORT) {
-            inout.append(String.format("%d, %d", iteraction, problem.nodes()));
+            inout.append(String.format("# Iteration: %d, cities: %d", iteraction, problem.nodes()));
         }
 
         Solver bestSolver = compared[0];
@@ -123,7 +123,7 @@ public class Analyzer {
                 inout.append(String.format("%s,%f,%d", s, cost, timeit));
             }
         }
-        
+
         statistics.bestThisIteration(bestSolver);
 
         inout.append("");
