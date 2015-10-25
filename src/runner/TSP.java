@@ -18,18 +18,19 @@ public class TSP {
      * @throws java.lang.Exception
      */
     public static void main(String[] args) throws Exception {
-        analyzeRandomProblems();
+        analyzeRandomEuclideanProblems();
         analyzeRealProblems();
+        analyzeRandomNonEuclideanProblems();
     }
 
     public static void analyzeRealProblems() throws IOException {
         Files.walk(Paths.get("src/problems")).forEach(filePath -> {
             if (Files.isRegularFile(filePath)) {
                 try {
-                    
+
                     System.out.println(String.format("Benchmarking graph %s.", filePath));
                     new Analyzer(filePath.getFileName().toString()).run();
-                    
+
                 } catch (Exception ex) {
                     Logger.getLogger(TSP.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -37,8 +38,15 @@ public class TSP {
         });
     }
 
-    public static void analyzeRandomProblems() throws Exception {
-        System.out.println("Benchmarking random problems...");
+    public static void analyzeRandomNonEuclideanProblems() throws Exception {
+        System.out.println("Benchmarking random non-euclidean problems...");
+        Analyzer a = new Analyzer();
+        a.use_euclidean_graphs = false;
+        a.run();
+    }
+
+    public static void analyzeRandomEuclideanProblems() throws Exception {
+        System.out.println("Benchmarking random euclidean problems...");
         new Analyzer().run();
     }
 }
