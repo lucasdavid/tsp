@@ -14,4 +14,4 @@ The paper reports the empirical performance comparison between the classical Twi
 ## References
 
 * P. Feofiloff, "Algoritmos para Grafos" (in Portuguese), IME-USP, available: <http://www.ime.usp.br/~pf/algoritmos_para_grafos>
-* M. E. J. Newman and M. Girvan, "Finding and evaluating community structure in networks", available: <https://docs.google.com/file/d/0Bxl_AQ6nM3yXMENIUDk3aHhDazA/edit?usp=sharing>
+* M. E. J. Newman and M. Girvan, "Finding and evaluating community structure in networks", available: <https://docs.google.com/file/d/0Bxl_AQ6nM3yXMENIUDk3aHhDazA>
