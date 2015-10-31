@@ -1,48 +1,17 @@
 #TSP#
 
-**Criação**: 07/02/2013
+* [Lucas Oliveira David](lucasolivdavid@gmail.com), Universidade Federal de São Carlos - São Carlos, SP, Brasil.
 
-**Última modificação**: 17/06/2013
-
-##Autor##
-
-Lucas Oliveira David.
-
-Universidade Federal de São Carlos - São Carlos, SP, Brasil.
-
-##Introdução##
+## Introduction
 
 >Given a list of cities and the distances between each pair of cities, what is the shortest possible route that visits each city exactly once and returns to the origin city? It is an NP-hard problem in combinatorial optimization, important in operations research and theoretical computer science.
 **(Wikipedia)**
 
-##Breve descrição##
+Volunteer scientific initiation student in Graph Theory field, resulting in the paper "Exploring optimal paths and communities in the Traveling Salesman Problem" (written in Brazilian Portuguese).
 
-Explorando caminhos ótimos e comunidades no problema do caixeiro viajante.
+The paper reports the empirical performance comparison between the classical Twice-around algorithm and a modified Twice-around which uses Dijkstra's shortest-path as sub-algorithm. Invariably, the classic Twice-around performed better than the one with Dijkstra's.
 
-##Descrição detalhada##
+## References
 
-Manipulação de algoritmos a fim da aproximação do TSP (problema do caixeiro viajante). Conceitos teóricos, como árvores de caminhos mínimos, árvores varredoras mínimas, comunidades ou algoritmos já implementados na linguagem em questão (C++) foram amplamente utilizados durante o trabalho. Seus respectivos autores serão citados, concomitantemente.
-
-##Composição do repositório##
-
-###Projeto Java###
-* Implementação do ambiente de análise e comparação de resultados
-* Implementação da leitura de instâncias do TSP a partir de um banco previamente definido: <http://www.tsp.gatech.edu/data/>
-* Geração de grafos k-n, para k > 3, com arestas de pesos aleatórios não-euclidianos.
-* Algoritmo de Prim.
-* Algoritmo de Dijkstra.
-* Algoritmo DFS - Busca em profundidade.
-* Algoritmo Twice-around.
-* Algoritmo Twice-around (dijkstra).
-* Algoritmo Edge-score.
-
-#Referências#
-
-**Paulo Feofiloff - IME-USP.**
-
-<http://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/prim.html>
-<http://www.ime.usp.br/~pf/algoritmos_para_grafos/aulas/dijkstra.html>
-
-**Newman, M. E. J.; Girvan, M. Título: Finding and evaluating community structure in networks.**
-
-<https://docs.google.com/file/d/0Bxl_AQ6nM3yXMENIUDk3aHhDazA/edit?usp=sharing>
+* P. Feofiloff, "Algoritmos para Grafos" (in Portuguese), IME-USP, available: <http://www.ime.usp.br/~pf/algoritmos_para_grafos>
+* M. E. J. Newman and M. Girvan, "Finding and evaluating community structure in networks", available: <https://docs.google.com/file/d/0Bxl_AQ6nM3yXMENIUDk3aHhDazA/edit?usp=sharing>
