@@ -1,3 +1,10 @@
 nbproject/
 build/
 reports/
+
+# Report files.
+report/*.aux
+report/*.pdf
+report/*.log
+report/*.out
+
