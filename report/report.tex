@@ -31,7 +31,7 @@
 
 \begin{abstract}
 
-In the Graph Theory field, one of the most important problems ever defined is the Minimum Hamiltonian Circuit, or simply Traveling Salesman Problem. Many algorithms have been developed to solve or approximate this problem, with one of them being the Twice-around Algorithm. This paper describes the behavior of the Twice-around algorithm when it has as input a shortest-path tree instead of its default minimum spanning tree. Through empirical experimentation, we discovered that the modified Twice-around would always perform worse than the original one.
+In the Graph Theory field, one of the most important problems is the Traveling Salesman Problem. Many algorithms have been developed to solve or approximate this problem, with one of them being the Twice-around Algorithm. This paper describes the behavior of the Twice-around algorithm when it has as input a shortest-path tree instead of its default minimum spanning tree. Through empirical experimentation, we discovered that the modified Twice-around consistently presented poor solutions compared to the original algorithm.
 
 \end{abstract}
 
@@ -45,7 +45,7 @@ In our world, it is possible to model a considerable set of problems using the T
 
 Currently, many different approaches are employed to solve the TSP. While some will seek the optimal answer through a smart (but possibly exhaustive) search, as Branch-and-bound or the Held-Karp algorithm, others will base themselves on heuristics to find a candidate-solution with reasonable cost (e.g. Lin-Kernighan or ant community optimization \cite{soricone}).
 
-This project's goal is to develop the basic algorithms involved (e.g. Dijkstra's, Prim's, Depth-First search, Twice-around), as well as an environment capable of creating or collecting instances of the problem from a database and running test between the original and the modified Twice-around algorithms. All results and necessary implementations can be found on this code repository: \href{https://github.com/lucasdavid/tsp}{tsp}.
+This project aim to develop the basic algorithms involved (e.g. Dijkstra's, Prim's, Depth-First search, Twice-around), as well as an environment capable of creating or collecting instances of the problem from a database and running test between the original and the modified Twice-around algorithms. All results and necessary implementations can be found on this code repository: \href{https://github.com/lucasdavid/tsp}{tsp}.
 
 \section{The Traveling Salesman Problem}
 \label{s:tsp}
@@ -56,7 +56,7 @@ Let $G=(X, E)$ be the k-complete symmetric weighted graph, where $X$ is a set of
 
 The Twice-around algorithm is an heuristic broadly employed when solving the TSP. 
 
-Let $G$ be defined as in section \ref{s:tsp}, the twice-around algorithm will transverse a minimum spanning tree extracted from $G$ using a search algorithm such as \textbf{Depth-First Search} while records the vertices visited. It will then proceed to remove the repetitions in the recorded sequence, expect for last vertice \cite{eyck}.
+Let $G$ be defined as in section \ref{s:tsp}, the twice-around algorithm will transverse a minimum spanning tree extracted from $G$ using a search algorithm such as \textbf{Depth-First Search} while records the vertices visited. It will then proceed to remove the repetitions in the recorded sequence, expect for last vertice \cite{nilsson}.
 
 \subsection{Twice-around Execution Example}
 
@@ -113,6 +113,7 @@ By eliminating all the repetitions, the algorithm will result in a Hamiltonian c
 It's also important to remember that any shortcut done in the MST $m$ will not decrease the sum of costs from the edges of the resulting tree, compared to the sum of edges' costs from the edges in $m$. The example above demonstrates this: the cost of the MST is $3+4+9=16$, whereas the cost of the MST after the firsts shortcut is $5+9+12=26$.
 
 \begin{theorem}
+	\label{t:sic}
 	Let $m=(V, F)$ be the MST extracted from graph k-complete $G=(V, E)$, $m'$ the path found by shortcutting all branches of $m$, $\delta_{AB}$ the distance between vertices $A$ and $B$, and $c(p)=\sum\delta_{X_iY_i}, p = (V, \{X_iY_i\})$.
 	$$c(m') \ge c(m)$$
 \end{theorem}
@@ -146,7 +147,7 @@ Differently from the minimum spanning tree, the \textbf{shortest path tree} asso
 	The shortest-path tree $T=(V_1, E_1)$ is such that the path cost between two vertices $u$ and $v$ is minimum. But $\delta_{uv} < \delta_{uw} + \delta_{wv}, \forall (u, v, w) \in V^3, u \ne v \ne w \ne u$ holds in euclidean spaces, so $T = (V_1, \{\delta_{v_0u, \forall u \in V_1}\})$, where $V_1$ is the set of all vertices in the connected cluster in which $v_0$ is placed.
 \end{proof}
 
-\section{Experimentation and Discussions}
+\section{Experiments}
 
 In order to observe the behavior of the Twice-around algorithm when it has as input a SPT instead of a MST, a analyzer was built. Given a set of S-TSP instances, it will solve all of them with both original and modified Twice-around. Information about the solutions is recorded in each iteration (e.g. costs, elapsed time, best performing algorithm). At the end, a report containing all data collected is issued.
 
@@ -187,25 +188,15 @@ Figure \ref{fig:ctrg} illustrates that the modified Twice-around consistently pr
 
 \section{Discussions}
 
-From \ref{t:star}, the shortest path trees found in euclidean graphs are stars. If Depth-first Search was implemented with \textbf{recursion to the left}, the recorded visiting lists can invariably be described by $L_1=(A, B, A, C, A, D, A, E, ..., A)$. With the repetitions removed, the Hamiltonian circuit candidate is $L=(A,B,C, D, E, ..., A)$ with cost $c_L=\sum_{i=0}^{n-2} V_iV_{i+1} + V_{n-1}V_0$. Now notice that no upper bound can be defined for cost $c_L$.
+From \ref{t:star}, the shortest path tree found in euclidean graph is a star. The recorded visiting list is then be described as $L_1=(A, B, A, C, A, D, A, E, ..., A)$. With the repetitions removed, the Hamiltonian circuit candidate is $L=(A,B,C, D, E, ..., A)$ with cost $c_L=\sum_{i=0}^{n-2} c(V_i, V_{i+1}) + c(V_{n-1}, V_0)$. Notice that no lower bound can be defined for cost $c_L$. As for shortest-path trees extracted from non-euclidean graphs: although they are not necessarily stars, we observed a tendency of those to have a high number of branches.
 
-If the tree used in Twice-around is \textbf{long} (has few branches), many sub-paths are preserved when building the circuit candidate. As these paths belong to the MST, they naturally imply smaller transition costs for the circuit. In the other hand, as we are required to take many shortcuts in \textbf{short trees}, such as the \textbf{star}, few sub-paths are actually preserved and the solution cost can drastically change. We observed that the shortest-path tree.
+If the tree used has few branches, many sub-paths are preserved when building the circuit candidate (few shortcuts are required). In the other hand, as we are required to take many shortcuts in trees with many branches, such as the \textbf{star}, few sub-paths are preserved and the solution cost can drastically change (from \ref{t:sic}, shortcutting increases cost). We believe this to be the main reason for the poor performance of the modified Twice-around.
 
-\begin{thebibliography}{1}
-	
-\bibitem{soricone}
-R. SORICONE and M. NEVILLE, ``Comparative Analysis of Genetic Algorithm Implementations," Available: \url{http://www.sigada.org/conf/sigada2004/SIGAda2004-CDROM/SIGAda2004-Proceedings/p35-sori cone.pdf?searchterm=Traveling+salesman+problem} [May, 2013]
+\section{Conclusion}
 
-\bibitem{eyck}
-J. T. EYCK, ``Approximate Algorithms for TSP,"
-Available: \url{http://www.academic.marist.edu/~jzbv/algori thms/approximatetspalgorithms.pdf}
-[June, 2013]
+This paper presented a modification of the Twice-around algorithm where a SPT was used as input instead of the classic MST. We observed, through empirical experimentation, that this modification performed significantly worse than the original algorithm.
 
-\bibitem{benevides}
-P. BENEVIDES, ``Aplicação de Heurísticas e Metaheurísticas para o problema do caixeiro viajante em um problema real de roterização de veículos," Available: \url{http://www.ppgmne.ufpr.br/arquivos/diss/257.pdf} [June, 2013]
+\bibliographystyle{plain}
+\bibliography{references}
 
-\bibitem{feo}
-P. FEOFILOFF, ``Algoritmos para grafos em C" (in Portuguese), Available: \url{http://www.ime.usp.br/~pf/ algoritmos_para_grafos}. [January, 2013]
-
-\end{thebibliography}
 \end{document}
