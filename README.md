@@ -9,7 +9,7 @@
 
 Volunteer scientific initiation student in Graph Theory field, resulting in the paper "Twice-around a Shortest-path Tree Significantly Increases the Solution Cost".
 
-The paper reports the empirical performance comparison between the classical Twice-around algorithm and a modified Twice-around which uses Dijkstra's shortest-path as sub-algorithm. Invariably, the classic Twice-around performed better than the one with Dijkstra's.
+The [paper](https://github.com/lucasdavid/tsp/blob/master/report/report.pdf) reports the empirical performance comparison between the classical Twice-around algorithm and a modified Twice-around which uses Dijkstra's shortest-path as sub-algorithm. Invariably, the classic Twice-around performed much better than the one with Dijkstra's.
 
 ## References
 
