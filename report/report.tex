@@ -20,8 +20,7 @@
 
 \author{Prof. Dr. Alexandre L. M. ~Levada,
 	Lucas O. ~David
-\thanks{Alexandre L. M. Levada and Lucas O. David are with Universidade Federal de Sao Carlos.}%
-%\thanks{Manuscript received April 19, 2005; revised January 11, 2007.}%
+\thanks{Alexandre L. M. Levada and Lucas O. David are with Universidade Federal de Sao Carlos.}
 }
 
 \markboth{\today}%
@@ -186,15 +185,11 @@ Figure \ref{fig:ctrg} illustrates that the modified Twice-around consistently pr
 	\label{fig:ctrg}
 \end{figure}
 
-\section{Discussions}
+\section{Conclusions}
 
 From \ref{t:star}, the shortest path tree found in euclidean graph is a star. The recorded visiting list is then be described as $L_1=(A, B, A, C, A, D, A, E, ..., A)$. With the repetitions removed, the Hamiltonian circuit candidate is $L=(A,B,C, D, E, ..., A)$ with cost $c_L=\sum_{i=0}^{n-2} c(V_i, V_{i+1}) + c(V_{n-1}, V_0)$. Notice that no lower bound can be defined for cost $c_L$. As for shortest-path trees extracted from non-euclidean graphs: although they are not necessarily stars, we observed a tendency of those to have a high number of branches.
 
-If the tree used has few branches, many sub-paths are preserved when building the circuit candidate (few shortcuts are required). In the other hand, as we are required to take many shortcuts in trees with many branches, such as the \textbf{star}, few sub-paths are preserved and the solution cost can drastically change (from \ref{t:sic}, shortcutting increases cost). We believe this to be the main reason for the poor performance of the modified Twice-around.
-
-\section{Conclusion}
-
-This paper presented a modification of the Twice-around algorithm where a SPT was used as input instead of the classic MST. We observed, through empirical experimentation, that this modification performed significantly worse than the original algorithm.
+If the tree inputed in Twice-around has few branches, many sub-paths are preserved when building the circuit candidate (few shortcuts are required). In the other hand, as we are required to take many shortcuts in trees with many branches, such as the \textbf{star}, few sub-paths are preserved and the solution cost can drastically change (from \ref{t:sic}, shortcutting increases cost). We believe this to be the main reason for the poor performance of the modified Twice-around.
 
 \bibliographystyle{plain}
 \bibliography{references}
